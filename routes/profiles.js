@@ -1,7 +1,7 @@
 const expres = require("express");
-const { check } = require("express-validator");
+// const { check } = require("express-validator");
 const profiles_service = require("./services/profiles_services");
-const boom = require("@hapi/boom");
+// const boom = require("@hapi/boom");
 const {
   create_schema,
   update_schema,

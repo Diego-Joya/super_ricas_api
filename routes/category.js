@@ -1,7 +1,7 @@
 const expres = require("express");
-const { check } = require("express-validator");
+// const { check } = require("express-validator");
 const category_service = require("./services/category_services");
-const boom = require("@hapi/boom");
+// const boom = require("@hapi/boom");
 const passport = require('passport');
 
 const {

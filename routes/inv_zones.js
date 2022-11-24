@@ -1,6 +1,6 @@
 const expres = require("express");
 const inv_zones_services = require("./services/inv_zones_services");
-const boom = require("@hapi/boom");
+// const boom = require("@hapi/boom");
 const {
   create_schema,
   update_schema,
