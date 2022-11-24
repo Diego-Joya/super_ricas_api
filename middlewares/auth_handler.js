@@ -1,4 +1,4 @@
-// const boom = require("@hapi/boom");
+const boom = require("@hapi/boom");
 const { config } = require("./../config/config");
 
 function checkApiKey(req, res, next) {
@@ -9,7 +9,7 @@ function checkApiKey(req, res, next) {
     if (apiKey == config.apiKey) {
       next();
     } else {
-    //   next(boom.unauthorized());
+      next(boom.unauthorized());
     }
   } catch (error) {
     console.log(error);
@@ -22,7 +22,7 @@ function checkAdminRole(req, res, next) {
     if (user.role == 1) {
       next();
     } else {
-    //   next(boom.unauthorized());
+      next(boom.unauthorized());
     }
   } catch (error) {
     console.log(error);
