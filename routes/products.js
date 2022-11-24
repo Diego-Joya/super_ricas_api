@@ -1,9 +1,9 @@
 const expres = require("express");
-const { check } = require("express-validator");
-const { validateRoutes } = require("../utils/validateRoutes");
-const { validateUsers } = require("../controllers/auth");
+// const { check } = require("express-validator");
+// const { validateRoutes } = require("../utils/validateRoutes");
+// const { validateUsers } = require("../controllers/auth");
 const productService = require("./services/products_services");
-const boom = require("@hapi/boom");
+// const boom = require("@hapi/boom");
 const {
   create_product_schema,
   update_product_schema,

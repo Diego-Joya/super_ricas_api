@@ -1,9 +1,9 @@
 const expres = require("express");
-const { check } = require("express-validator");
-const { validateRoutes } = require("../utils/validateRoutes");
-const { validateUsers } = require("../controllers/auth");
+// const { check } = require("express-validator");
+// const { validateRoutes } = require("../utils/validateRoutes");
+// const { validateUsers } = require("../controllers/auth");
 const userService = require("./services/user_services");
-const boom = require("@hapi/boom");
+// const boom = require("@hapi/boom");
 const bcrypt = require("bcrypt");
 
 const passport = require('passport');

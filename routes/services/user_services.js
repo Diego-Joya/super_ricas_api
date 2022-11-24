@@ -2,7 +2,7 @@
 const pool = require("./../../db/connection");
 const moment = require("moment");
 const bcrypt = require("bcrypt");
-const { query } = require("express-validator");
+// const { query } = require("express-validator");
 
 class user_service {
   constructor() {
