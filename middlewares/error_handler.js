@@ -1,4 +1,4 @@
-const boom = require("@hapi/boom");
+// const boom = require("@hapi/boom");
 
 function logErrors(err,req, res, next){
     console.log('mostrando errores');
