@@ -31,17 +31,17 @@ passport.authenticate('jwt', { session: false}),
  try {
   const body = req.body;
   console.log('ESTE ES EL BODY MIRELOOOOOOOO');
-  console.log(body);
-for (let i = 0; i < body.length; i++) {
+  console.log(body.pays);
+for (let i = 0; i < body.pays.length; i++) {
     console.log('holaaa putito que  miras...!');
 
-    if(typeof body[i].id ==='undefined'){
-        let data = body[i]
+    if(typeof body.pays[i].id ==='undefined'){
+        let data = body.pays[i]
         const crear = await payments.crear(data);
 
     }else{
-        let id = body[i].id;
-        let data = body[i]
+        let id = body.pays[i].id;
+        let data = body.pays[i]
         const actualizar = await payments.actualizar(id, data);
     }
     
