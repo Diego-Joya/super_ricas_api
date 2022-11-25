@@ -30,12 +30,27 @@ passport.authenticate('jwt', { session: false}),
  async (req, res, next) => {
  try {
   const body = req.body;
-  const crear = await payments.crear(body);
+  console.log(body);
+for (let i = 0; i < body.length; i++) {
+    if(typeof body[i].id ==='undefined'){
+        console.log('crear...');
+        let data = body[i]
+        const crear = await payments.crear(data);
+
+    }else{
+        console.log('actualizando... ');
+        let id = body[i].id;
+        let data = body[i]
+        const actualizar = await payments.actualizar(id, data);
+    }
+    
+}
+
+
 
   res.json({
     ok: true,
     message: "Registro creado exitosamente",
-    data: crear,
   });
  } catch (error) {
   next(error);
@@ -43,23 +58,6 @@ passport.authenticate('jwt', { session: false}),
 }
 );
 
-router.post("/filters/",
-// passport.authenticate('jwt', { session: false}),
-//  validatorHandler(create_schema, "body"),
-  async (req, res, next) => {
- try {
-  const body = req.body;
-  const crear = await payments.filters(body);
-
-  res.json({
-    ok: true,
-    data: crear,
-  });
- } catch (error) {
-  next(error);
- }
-}
-);
 
 router.patch(
   "/:id",
