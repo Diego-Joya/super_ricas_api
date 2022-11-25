@@ -7,6 +7,7 @@ const inv_zones = require('./inv_zones');
 const profiles = require('./profiles');
 const login = require('./login');
 const invetario_detalle = require('./invetario_detalle');
+const payments = require('./payments');
 
 
 
@@ -20,6 +21,7 @@ function routerApi(app) {
   app.use("/api/profiles", profiles); 
   app.use("/api/login", login); 
   app.use("/api/inventario_det", invetario_detalle); 
+  app.use("/api/payments", payments); 
 
 
 }

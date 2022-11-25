@@ -8,9 +8,4 @@ const URL= `postgres://${USER}:${PASSWORD}@${config.dbHost}:${config.dbPort}/${c
 
 const pool = new Pool({connectionString:URL})
     
-<<<<<<< HEAD
- 
-=======
->>>>>>> fe2a892f2ba5e753d095c0c5355b445de1db6865
-
 module.exports= pool;
