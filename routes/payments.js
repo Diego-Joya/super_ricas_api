@@ -30,7 +30,11 @@ passport.authenticate('jwt', { session: false}),
  async (req, res, next) => {
  try {
   const body = req.body;
+  console.log('ESTE ES EL BODY MIRELOOOOOOOO');
+  console.log(body);
 for (let i = 0; i < body.length; i++) {
+    console.log('holaaa putito que  miras...!');
+
     if(typeof body[i].id ==='undefined'){
         let data = body[i]
         const crear = await payments.crear(data);
