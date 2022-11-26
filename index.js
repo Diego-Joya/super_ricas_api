@@ -34,7 +34,7 @@ app.use(errorHandler);
 console.log(process.env.PORT);
 
 // https.createServer(app).listen(process.env.PORT, process.env.HOST);
-// http.createServer(app).listen(process.env.PORT, process.env.HOST);
+http.createServer(app).listen(process.env.PORT, process.env.HOST);
 
 app.listen(() => {
   console.log(`Sevidor corriendo ${process.env.PORT}`);
