@@ -29,6 +29,16 @@ class payments_service {
     const rta = await this.pool.query(query);
     return rta.rows;
   }
+  async consult_invetario_zonas_det(data) {
+    console.log(data);
+    const rta = await this.pool
+      .query(
+        `SELECT *, id as key FROM pago where id_iventario = $1`,
+        [data]
+      )
+      .catch((err) => console.log(err));
+    return rta.rows;
+  }
 
   async buscar_uno(data) {
     const rta = await this.pool

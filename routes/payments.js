@@ -9,11 +9,14 @@ const router = expres.Router();
 
 const payments = new payments_service();
 
-router.get("/",
+router.get("/:id",
 passport.authenticate('jwt', { session: false}),
  async (req, res, next) => {
   try {
-    const consulta_total = await payments.buscar_todos();
+    const { id } = req.params;
+
+    // const consulta_total = await payments.buscar_todos();
+    const consulta_total = await payments.consult_invetario_zonas_det(id);
     res.json({
       ok: true,
       data: consulta_total,
@@ -30,7 +33,6 @@ passport.authenticate('jwt', { session: false}),
  async (req, res, next) => {
  try {
   const body = req.body;
-  console.log('ESTE ES EL BODY MIRELOOOOOOOO');
   console.log(body.pays);
 for (let i = 0; i < body.pays.length; i++) {
     console.log('holaaa putito que  miras...!');
