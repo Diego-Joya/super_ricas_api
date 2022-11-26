@@ -63,7 +63,7 @@ class inv_zones_services {
     const fecha_fin = body.fecha_fin;
 
     
-    const query = `select a.*, b.nombre as nom_producto, c.nombre as nom_zona from inventario_zonas a left join productos b on
+    const query = `select a.*, b.nombre as nom_producto, c.nombre as nom_zona from inventario_zonas_det a left join productos b on
     (a.id_producto = b.id) left join zonas c on (a.id_zona = c. id)
      where b.nombre ILIKE ('%${data}%') OR c.nombre ILIKE ('%${data}%') OR b.codigo ILIKE ('%${data}%') OR a.id::text ILIKE ('%${data}% ')
      and a.fecha_creacion between '${fecha_ini}' and '${fecha_fin}'`;
