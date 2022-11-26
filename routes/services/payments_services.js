@@ -33,7 +33,7 @@ class payments_service {
     console.log(data);
     const rta = await this.pool
       .query(
-        `SELECT *, id as key FROM pago where id_iventario = $1`,
+        `SELECT *,fecha::text as fecha, id as key FROM pago where id_iventario = $1`,
         [data]
       )
       .catch((err) => console.log(err));
@@ -43,7 +43,7 @@ class payments_service {
   async buscar_uno(data) {
     const rta = await this.pool
       .query(
-        `SELECT *, id as key FROM pago where  id::text ILIKE ('%${data}%') `
+        `SELECT *,fecha::text as fecha, id as key FROM pago where  id::text ILIKE ('%${data}%') `
       )
       .catch((err) => console.log(err));
     return rta.rows;
