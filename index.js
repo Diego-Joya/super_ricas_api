@@ -10,6 +10,7 @@ const {
 const cors = require("cors");
 const { checkApiKey } = require("./middlewares/auth_handler");
 const http = require("http");
+const https = require("https");
 
 const app = express();
 app.use(cors());
@@ -32,6 +33,7 @@ app.use(errorHandler);
 
 console.log(process.env.PORT);
 
+https.createServer({}, app).listen(process.env.PORT, process.env.HOST);
 // http.createServer(app).listen(process.env.PORT, process.env.HOST);
 
 app.listen(() => {
