@@ -8,6 +8,7 @@ const precio_unidad = Joi.number();
 const precio_total = Joi.number();
 const codigo_producto = Joi.any();
 const usuario = Joi.string().max(100);
+const codigo = Joi.any();
 
 const create_schema = Joi.object({
   id_producto: id_producto.required(),
@@ -17,6 +18,7 @@ const create_schema = Joi.object({
   precio_total: precio_total.required(),
   codigo_producto: codigo_producto.required(),
   usuario: usuario.required(),
+  codigo: codigo.required(),
 
 });
 const update_schema = Joi.object({
@@ -27,6 +29,7 @@ const update_schema = Joi.object({
   precio_total: precio_total.required(),
   codigo_producto: codigo_producto.required(),
   usuario: usuario.required(),
+  codigo: codigo.required(),
 
 });
 const get_schema = Joi.object({

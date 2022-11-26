@@ -12,11 +12,12 @@ class zones_services {
     const nombre = body.nombre;
     const descripcion = body.descripcion;
     const usuario = body.usuario;
+    const codigo = body.codigo;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
-    const query = `INSERT INTO public.zonas(nombre, descripcion,fecha_creacion, usuario) VALUES ($1, $2, $3, $4) RETURNING *`;
+    const query = `INSERT INTO public.zonas(nombre, descripcion,fecha_creacion, usuario,codigo) VALUES ($1, $2, $3, $4, $5) RETURNING *`;
     const rta = await this.pool
-      .query(query, [nombre, descripcion, fecha_hora,usuario])
+      .query(query, [nombre, descripcion, fecha_hora,usuario, codigo])
       .catch((err) => console.log(err));
     return rta.rows;
   }
@@ -48,14 +49,16 @@ class zones_services {
     const nombre = body.nombre;
     const descripcion = body.descripcion;
     const usuario = body.usuario;
+    const codigo = body.codigo;
+
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
     const rta = await this.pool
       .query(
         `UPDATE public.zonas
-    SET  nombre=$1, descripcion=$2,fecha_modificacion=$3, usuario=$4
-    WHERE id=$5 `,
-        [nombre, descripcion, fecha_hora, usuario, idact]
+    SET  nombre=$1, descripcion=$2,fecha_modificacion=$3, usuario=$4, codigo=$5
+    WHERE id=$6 `,
+        [nombre, descripcion, fecha_hora, usuario, codigo, idact]
       )
       .catch((err) => console.log(err));
     return body;
