@@ -9,6 +9,7 @@ class inv_zones_services {
   }
 
   async crear(body) {
+    console.log(body)
     const id_producto = body.id_producto;
     const id_zona = body.id_zona;
     const cantidad = body.cantidad;
@@ -16,11 +17,13 @@ class inv_zones_services {
     const precio_total = body.precio_total;
     const codigo_producto = body.codigo_producto;
     const usuario = body.usuario;
+    const saldo_base = body.saldo_base;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
 
-    const query = `INSERT INTO public.inventario_zonas(fecha_creacion, id_producto, id_zona, cantidad, precio_unidad, precio_total, codigo_producto, usuario )
-     VALUES ($1,$2,$3,$4, $5, $6, $7, $8) RETURNING *`;
+    const query = `INSERT INTO public.inventario_zonas(fecha_creacion, id_producto, id_zona,
+       cantidad, precio_unidad, precio_total, codigo_producto, usuario, saldo_base )
+     VALUES ($1,$2,$3,$4, $5, $6, $7, $8, $9) RETURNING *`;
     console.log(query);
     const rta = await this.pool
       .query(query, [
@@ -32,6 +35,7 @@ class inv_zones_services {
         precio_total,
         codigo_producto,
         usuario,
+        saldo_base
       ])
       .catch((err) => console.log(err));
     return rta.rows;
@@ -82,6 +86,7 @@ class inv_zones_services {
     const precio_total = body.precio_total;
     const codigo_producto = body.codigo_producto;
     const usuario = body.usuario;
+    const saldo_base = body.saldo_base;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
     let consu = await this.buscar_uno(idact);
     if (consu == "") {
@@ -90,8 +95,9 @@ class inv_zones_services {
     const rta = await this.pool
       .query(
         `UPDATE public.inventario_zonas
-    SET  id_producto=$1, id_zona=$2, cantidad=$3,fecha_modificacion=$4, precio_unidad=$5, precio_total=$6, codigo_producto=$7, usuario=$8
-    WHERE id=$9 `,
+    SET  id_producto=$1, id_zona=$2, cantidad=$3,fecha_modificacion=$4, precio_unidad=$5, precio_total=$6,
+     codigo_producto=$7, usuario=$8, saldo_base=$9
+    WHERE id=$10 `,
         [
           id_producto,
           id_zona,
@@ -101,6 +107,7 @@ class inv_zones_services {
           precio_total,
           codigo_producto,
           usuario,
+          saldo_base,
           idact,
         ]
       )

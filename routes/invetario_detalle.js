@@ -88,6 +88,8 @@ router.post(
       dta.fecha_dia = body.fecha_dia;
       dta.id_zona = body.id_zona;
       dta.usuario = body.usuario;
+      dta.saldo_base = body.saldo_base;
+
 
       const crear = await invetario.crear_inv_zona(dta);
       const consulta = await invetario.consult_invetario_zonas_id(crear[0].id);
@@ -137,6 +139,8 @@ router.patch(
       dta.fecha_dia = body.fecha_dia;
       dta.id_zona = body.id_zona;
       dta.usuario = body.usuario;
+      dta.saldo_base = body.saldo_base;
+
       const actualizar = await invetario.actualizar(id, dta);
 
       const existentes = await invetario.consult_invetario_zonas_det(id);
