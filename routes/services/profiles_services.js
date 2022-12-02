@@ -13,7 +13,6 @@ class profiles_service {
     const company = body.company;
     const type = body.type;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
-
     const query = `INSERT INTO public.profiles(name, company, type,fecha_creacion)
      VALUES ($1, $2, $3, $4) RETURNING *`;
     const rta = await this.pool
