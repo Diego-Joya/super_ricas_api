@@ -51,7 +51,7 @@ router.get(
 
 router.post(
   "/",
-  passport.authenticate('jwt', { session: false}),
+  // passport.authenticate('jwt', { session: false}),
   validatorHandler(create_schema, "body"),
   async (req, res) => {
     const body = req.body;

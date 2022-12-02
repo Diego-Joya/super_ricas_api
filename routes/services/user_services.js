@@ -83,10 +83,10 @@ class user_service {
     return rta.rows;
   }
   async actualizar_profile(idact, body) {
-    const nombre = body.nombre;
+    const nombre = body.name;
     const email = body.email;
-    const user = body.user;
-    const celular = body.celular;
+    const user = body.user_login;
+    const celular = body.cell_phone;
     const photo = body.photo;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
