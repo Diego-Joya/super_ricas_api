@@ -31,7 +31,7 @@ class Invetario_detalle {
     return body;
   }
   async actualizar_estado_inventario(idact) {
-    const estado = "SALIDA";
+    const estado = "COMPLETADO";
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
     const rta = await this.pool

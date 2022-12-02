@@ -62,7 +62,8 @@ class user_service {
   async consultar_user(data) {
     const rta = await this.pool
       .query(
-        `SELECT user_login,company,id_profile,password, id as key FROM users where user_login=$1`,
+        `SELECT a.user_login,a.company,a.id_profile,a.password,a.photo, a.id as key,b.name FROM users a left join 
+        profiles b on (a.id_profile=b.id) where user_login=$1`,
         [data]
       )
       .catch((err) => console.log(err));

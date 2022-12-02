@@ -90,7 +90,6 @@ router.post(
       dta.usuario = body.usuario;
       dta.saldo_base = body.saldo_base;
 
-
       const crear = await invetario.crear_inv_zona(dta);
       const consulta = await invetario.consult_invetario_zonas_id(crear[0].id);
       crear[0].zona_text = consulta[0].zona_text;
@@ -119,6 +118,38 @@ router.post(
   }
 );
 
+router.post(
+  "estado/:id",
+  passport.authenticate("jwt", { session: false }),
+
+  // validatorHandler(update_schema, "body"),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      console.log(id);
+      const body = req.body;
+      const consulta = await invetario.consult_invetario_zonas_id(id);
+      if (consulta == "") {
+        res.json({
+          ok: false,
+          messege: "No se encontro el registro en la bd",
+        });
+      }
+      const actualizar_estado = await invetario.actualizar_estado_inventario(
+        id
+      );
+
+      res.json({
+        ok: true,
+        message: "Registro actualizado correctamente",
+        data: resp,
+        id,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 router.patch(
   "/:id",
   passport.authenticate("jwt", { session: false }),
@@ -158,7 +189,7 @@ router.patch(
         body.detalles[i].usuario = body.usuario;
         body.detalles[i].id_zona = body.id_zona;
         body.detalles[i].id_invetario = id;
-        if (typeof body.detalles[i].id != 'undefined' ) {
+        if (typeof body.detalles[i].id != "undefined") {
           if (detalles.includes(body.detalles[i].id)) {
             contador++;
 
