@@ -172,8 +172,8 @@ class Invetario_detalle {
   async consult_invetario_zonas() {
     const query =
     `select a.*,(select sum(valor_venta::double precision)  from inventario_zonas_det where  id_inventario=a.id
-      )as valor_venta,(select sum(precio_total::double precision)  from inventario_zonas_det where  id_inventario=a.id
-      )as precio_total, (select sum(valor_comision::double precision)  from inventario_zonas_det where  id_inventario=a.id
+      )as valor_venta,((select sum(precio_total::double precision)  from inventario_zonas_det where  id_inventario=a.id
+      )+ a.saldo_base) as precio_total, (select sum(valor_comision::double precision)  from inventario_zonas_det where  id_inventario=a.id
       )as valor_comision,(select sum(valor_iva::double precision)  from inventario_zonas_det where  id_inventario=a.id
       )as valor_iva,(select sum(valor::double precision)  from pago where  id_iventario=a.id
       )as valor_ingresos,((select sum(precio_total::double precision)  from inventario_zonas_det where  id_inventario=a.id) - (select sum(valor::double precision)  from pago where  id_iventario=a.id
