@@ -26,6 +26,38 @@ class payments_service {
     return rta.rows;
   }
 
+//GUARDAR COMSION
+  async save_pago_comision(body) {
+    console.log(body);
+    const usuario = body.usuario;
+    const id_inventario = body.id_inventario;
+    const valor_comision = body.valor_comision;
+    const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
+
+    const query = `INSERT INTO public.pago_comision(usuario, id_inventario, valor_comision, fecha)
+     VALUES ($1, $2, $3, $4) RETURNING *`;
+    const rta = await this.pool
+      .query(query, [usuario, id_inventario, valor_comision,fecha_hora ])
+      .catch((err) => console.log(err));
+    return rta.rows;
+  }
+//ACTUALIZAR ESTADO PAGO 
+async actualizar_pago_estado(idact) {
+  const estado = 'PAGADO';
+ 
+  const rta = await this.pool
+    .query(
+      `UPDATE public.pago
+  SET   estado=$1 `,
+      [estado]
+    )
+    .catch((err) => console.log(err));
+  return rta;
+}
+
+
+
+
   async buscar_todos() {
     const query = "SELECT *, id as key FROM pago";
     const rta = await this.pool.query(query);
