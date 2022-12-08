@@ -26,6 +26,23 @@ passport.authenticate('jwt', { session: false}),
   }
 });
 
+router.get("/pay_commission/:id",
+passport.authenticate('jwt', { session: false}),
+ async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // const consulta_total = await payments.buscar_todos();
+    const consulta_pagos = await payments.consult_pagos_comision(id);
+    res.json({
+      ok: true,
+      data: consulta_pagos,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 
 router.post("/",

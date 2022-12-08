@@ -41,6 +41,16 @@ class payments_service {
       .catch((err) => console.log(err));
     return rta.rows;
   }
+  async consult_pagos_comision(data) {
+    console.log(data);
+    const rta = await this.pool
+      .query(
+        `SELECT SUM(valor) AS valor FROM pago where id_iventario::text = $1 and estado='ACTIVO'`,
+        [data]
+      )
+      .catch((err) => console.log(err));
+    return rta.rows;
+  }
 
   async buscar_uno(data) {
     const rta = await this.pool
