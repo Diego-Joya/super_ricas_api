@@ -35,7 +35,6 @@ passport.authenticate('jwt', { session: false}),
   const body = req.body;
   console.log(body.pays);
 for (let i = 0; i < body.pays.length; i++) {
-    console.log('holaaa putito que  miras...!');
 
     if(typeof body.pays[i].id ==='undefined'){
         let data = body.pays[i]

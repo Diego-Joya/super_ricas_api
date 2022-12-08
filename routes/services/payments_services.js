@@ -15,12 +15,13 @@ class payments_service {
     const valor = body.valor;
     const fecha = body.fecha;
     const concepto = body.concepto;
+    const estado = body.estado;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
-    const query = `INSERT INTO public.pago(usuario, id_iventario, id_zona, valor, fecha_creacion, fecha, concepto)
-     VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
+    const query = `INSERT INTO public.pago(usuario, id_iventario, id_zona, valor, fecha_creacion, fecha, concepto, estado)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`;
     const rta = await this.pool
-      .query(query, [usuario, id_iventario, id_zona, valor,fecha_hora, fecha,concepto ])
+      .query(query, [usuario, id_iventario, id_zona, valor,fecha_hora, fecha,concepto, estado ])
       .catch((err) => console.log(err));
     return rta.rows;
   }
@@ -56,6 +57,7 @@ class payments_service {
     const valor = body.valor;
     const fecha = body.fecha;
     const concepto = body.concepto;
+    const estado = body.estado;
 
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
@@ -67,9 +69,9 @@ class payments_service {
     const rta = await this.pool
       .query(
         `UPDATE public.pago
-    SET  usuario=$1, id_iventario=$2, id_zona=$3, valor=$4, fecha_modificacion=$5, fecha=$6, concepto=$7
-    WHERE id=$8 `,
-        [usuario, id_iventario, id_zona, valor,fecha_hora, fecha, concepto, idact]
+    SET  usuario=$1, id_iventario=$2, id_zona=$3, valor=$4, fecha_modificacion=$5, fecha=$6, concepto=$7, estado=$8
+    WHERE id=$9 `,
+        [usuario, id_iventario, id_zona, valor,fecha_hora, fecha, concepto, estado, idact]
       )
       .catch((err) => console.log(err));
     return rta;
