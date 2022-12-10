@@ -124,6 +124,32 @@ router.patch(
   }
 );
 
+router.patch(
+  "/end_inventory/:id",
+  // passport.authenticate("jwt", { session: false }),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const body = req.body;
+      const actualizar = await payments.actualizar_invetario(id, body);
+      if (actualizar == false) {
+        res.json({
+          ok: false,
+          message: "El registro no existe en la bd",
+        });
+      } else {
+        res.json({
+          message: "Registro actualizado correctamente",
+          data: actualizar,
+          id,
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 router.delete(
   "/:id",
   passport.authenticate("jwt", { session: false }),

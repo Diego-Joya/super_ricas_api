@@ -92,6 +92,15 @@ async actualizar_pago_estado(idact) {
       .catch((err) => console.log(err));
     return rta.rows;
   }
+  async buscar_invetario(data) {
+    console.log(data);
+    const rta = await this.pool
+      .query(
+        `SELECT * FROM inventario_zonas where  id::text ILIKE ('%${data}%') `
+      )
+      .catch((err) => console.log(err));
+    return rta.rows;
+  }
   async actualizar(idact, body) {
     const usuario = body.usuario;
     const id_iventario = body.id_iventario;
@@ -114,6 +123,24 @@ async actualizar_pago_estado(idact) {
     SET  usuario=$1, id_iventario=$2, id_zona=$3, valor=$4, fecha_modificacion=$5, fecha=$6, concepto=$7, estado=$8
     WHERE id=$9 `,
         [usuario, id_iventario, id_zona, valor,fecha_hora, fecha, concepto, estado, idact]
+      )
+      .catch((err) => console.log(err));
+    return rta;
+  }
+  async actualizar_invetario(idact) {
+   
+
+    let consu = await this.buscar_invetario(idact);
+    const estado = 'FINALIZADO';
+    if (consu == "") {
+      return false;
+    }
+    const rta = await this.pool
+      .query(
+        `UPDATE public.inventario_zonas
+    SET  estado=$1
+    WHERE id=$2 `,
+        [estado, idact]
       )
       .catch((err) => console.log(err));
     return rta;
