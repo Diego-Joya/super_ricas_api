@@ -59,6 +59,15 @@ class user_service {
       .catch((err) => console.log(err));
     return rta.rows;
   }
+  async validar_user(data) {
+    const rta = await this.pool
+      .query(
+        `SELECT *, id as key FROM users where user_login=$1`,
+        [data]
+      )
+      .catch((err) => console.log(err));
+    return rta.rows;
+  }
   async consultar_user(data) {
     const rta = await this.pool
       .query(

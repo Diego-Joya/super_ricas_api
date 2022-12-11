@@ -6,10 +6,13 @@ const userService = require("./services/user_services");
 // const boom = require("@hapi/boom");
 const bcrypt = require("bcrypt");
 
-const passport = require('passport');
+const passport = require("passport");
 
 const {
-  create_schema, update_schema, get_schema, delete_schema,
+  create_schema,
+  update_schema,
+  get_schema,
+  delete_schema,
 } = require("../schema/user_schame");
 const validatorHandler = require("./../middlewares/validator_handler");
 
@@ -17,23 +20,25 @@ const router = expres.Router();
 
 const service = new userService();
 
-router.get("/",
-passport.authenticate('jwt', { session: false}),
-async (req, res, next) => {
-  try {
-    const productos = await service.buscar_todos();
-    res.json({
-      ok: true,
-      data: productos,
-    });
-  } catch (error) {
-    next(error);
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res, next) => {
+    try {
+      const productos = await service.buscar_todos();
+      res.json({
+        ok: true,
+        data: productos,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 router.get(
   "/:nombre",
-  passport.authenticate('jwt', { session: false}),
+  passport.authenticate("jwt", { session: false }),
   validatorHandler(get_schema, "params"),
   async (req, res, next) => {
     try {
@@ -56,25 +61,33 @@ router.post(
   async (req, res) => {
     const body = req.body;
     console.log(body);
-    const crear = await service.crear(body);
-    delete crear[0].password;
+    const validar = await service.validar_user(body.user);
+    if (validar != false) {
+      res.json({
+        ok: false,
+        message: "Este usuario ya existe!",
+      });
+    } else {
+      const crear = await service.crear(body);
+      delete crear[0].password;
 
-    res.json({
-      ok: true,
-      message: "Registro creado correctamente!",
-      data: crear,
-    });
+      res.json({
+        ok: true,
+        message: "Registro creado correctamente!",
+        data: crear,
+      });
+    }
   }
 );
 router.post(
   "/password/",
-  passport.authenticate('jwt', { session: false}),
+  passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     const body = req.body;
-    const id= body.id
+    const id = body.id;
     const consul = await service.consulta_password(id);
     console.log(consul);
-    let passport = consul[0].password
+    let passport = consul[0].password;
     const verify = await bcrypt.compare(body.password, passport);
     console.log(verify);
     if (verify) {
@@ -82,21 +95,18 @@ router.post(
         ok: true,
         message: "Password correcta!",
       });
-      
-    }else{
+    } else {
       res.json({
         ok: false,
         message: "Password incorrecto!",
       });
     }
-
-   
   }
 );
 
 router.patch(
   "/:id",
-  passport.authenticate('jwt', { session: false}),
+  passport.authenticate("jwt", { session: false }),
   validatorHandler(update_schema, "body"),
   async (req, res, next) => {
     try {
@@ -122,7 +132,7 @@ router.patch(
 );
 router.patch(
   "/profile/:id",
-  passport.authenticate('jwt', { session: false}),
+  passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
       const { id } = req.params;
@@ -148,7 +158,7 @@ router.patch(
 
 router.delete(
   "/:id",
-  passport.authenticate('jwt', { session: false}),
+  passport.authenticate("jwt", { session: false }),
   validatorHandler(delete_schema, "params"),
   async (req, res) => {
     const { id } = req.params;
