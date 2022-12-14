@@ -14,6 +14,7 @@ const validatorHandler = require("./../middlewares/validator_handler");
 const router = expres.Router();
 const invetario = new Invetario_detalle();
 
+// CONSULTA MERCANCIA ZONAS
 router.get("/inven_zonas", async (req, res, next) => {
   try {
     const cat = await invetario.consult_invetario_zonas();
@@ -25,18 +26,20 @@ router.get("/inven_zonas", async (req, res, next) => {
     next(error);
   }
 });
-router.get("/inven_zonas_det", async (req, res, next) => {
-  try {
-    const cat = await invetario.consult_invetario_zonas();
-    res.json({
-      ok: true,
-      data: cat,
-    });
-  } catch (error) {
-    next(error);
-  }
-});
+// CONSULTA MERCANCIA ZONAS DESTALLES
 
+// router.get("/inven_zonas_det", async (req, res, next) => {
+//   try {
+//     const cat = await invetario.consult_invetario_zonas();
+//     res.json({
+//       ok: true,
+//       data: cat,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+// CONSULTA MERCANCIA ZONAS DESTALLES
 router.get(
   "/inven_zonas_det/:nombre",
   validatorHandler(get_schema, "params"),
@@ -55,7 +58,7 @@ router.get(
     }
   }
 );
-
+// CONSULTA MERCACIA POR ID 
 router.get(
   "/inven_zonas/id/:nombre",
   validatorHandler(get_schema, "params"),
