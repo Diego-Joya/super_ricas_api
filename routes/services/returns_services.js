@@ -44,8 +44,7 @@ class returns_service {
 
   async buscar_uno(body) {
     // const data = body.data;
-    console.log(body.data);
-    const data= body.data;
+    const data= body.buscar;
     const fecha_ini = body.fecha_inicio;
     const fecha_fin = body.fecha_fin;
     console.log(fecha_ini);
