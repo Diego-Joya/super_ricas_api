@@ -21,32 +21,53 @@ class returns_service {
     const query = `INSERT INTO public.devolucion(usuario, fecha_creacion, id_zona, zona_text, id_producto, producto_text, cantidad, fecha)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`;
     const rta = await this.pool
-      .query(query, [usuario, fecha_hora, id_zona, zona_text, id_producto, producto_text, cantidad, fecha ])
+      .query(query, [
+        usuario,
+        fecha_hora,
+        id_zona,
+        zona_text,
+        id_producto,
+        producto_text,
+        cantidad,
+        fecha,
+      ])
       .catch((err) => console.log(err));
     return rta.rows;
   }
 
-
-
- 
   async buscar_todos() {
     const rta = await this.pool
-      .query(
-        `SELECT *,fecha::text as fecha, id as key FROM devolucion`
-      )
+      .query(`SELECT *,fecha::text as fecha, id as key FROM devolucion`)
       .catch((err) => console.log(err));
     return rta.rows;
   }
-  
-  async buscar_uno(data) {
+
+  async buscar_uno(body) {
+    // const data = body.data;
+    console.log(body.data);
+    const data= body.data;
+    const fecha_ini = body.fecha_inicio;
+    const fecha_fin = body.fecha_fin;
+    console.log(fecha_ini);
+    let  where=` where 1=1`
+    if(typeof data!=='undefined' && data!==''){
+      where+=`  and zona_text::text ILIKE ('%${data}%') or producto_text::text ILIKE ('%${data}%') `
+    }
+    if (typeof fecha_ini !== "undefined" && fecha_ini != "") {
+       where += ` and fecha between '${fecha_ini}' and '${fecha_fin}'`;
+    }
+
+    console.log(where);
+    const query = `SELECT *,fecha::text as fecha, id as key FROM devolucion  ${where} order by id desc`
+    console.log(query);
     const rta = await this.pool
       .query(
-        `SELECT *,fecha::text as fecha, id as key FROM devolucion where  id::text ILIKE ('%${data}%') `
+       query
       )
       .catch((err) => console.log(err));
     return rta.rows;
   }
-  
+
   async actualizar(idact, body) {
     const usuario = body.usuario;
     const id_zona = body.id_zona;
@@ -55,9 +76,8 @@ class returns_service {
     const producto_text = body.producto_text;
     const cantidad = body.cantidad;
     const fecha = body.fecha;
-    
-    const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
+    const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
     let consu = await this.buscar_uno(idact);
     if (consu == "") {
@@ -68,12 +88,21 @@ class returns_service {
         `UPDATE public.devolucion
     SET  usuario=$1, fecha_modificacion=$2, id_zona=$3, zona_text=$4, id_producto=$5, producto_text=$6, cantidad=$7, fecha=$8
     WHERE id=$9 `,
-    [usuario, fecha_hora, id_zona, zona_text, id_producto, producto_text, cantidad, fecha, idact]
+        [
+          usuario,
+          fecha_hora,
+          id_zona,
+          zona_text,
+          id_producto,
+          producto_text,
+          cantidad,
+          fecha,
+          idact,
+        ]
       )
       .catch((err) => console.log(err));
     return rta;
   }
-
 
   async delete(id_delete) {
     let consu = await this.buscar_uno(id_delete);

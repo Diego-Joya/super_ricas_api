@@ -47,6 +47,23 @@ router.get(
   }
 );
 
+router.post(
+  "/filters",
+  // passport.authenticate("jwt", { session: false }),
+  async (req, res, next) => {
+    try {
+      const body = req.body;
+      const cat = await returns.buscar_uno(body);
+      res.json({
+        ok: true,
+        data: cat,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 
 router.post(
   "/",
