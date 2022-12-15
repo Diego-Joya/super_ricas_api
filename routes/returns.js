@@ -1,5 +1,7 @@
 const expres = require("express");
 const returns_service = require("./services/returns_services");
+const zonas_services = require("./services/zones_service");
+const productos_services = require("./services/products_services");
 // const boom = require("@hapi/boom");
 const validatorHandler = require("./../middlewares/validator_handler");
 const passport = require("passport");
@@ -7,6 +9,8 @@ const passport = require("passport");
 const router = expres.Router();
 
 const returns = new returns_service();
+const zonas = new zonas_services();
+const produc = new productos_services();
 
 router.get(
   "/:id",
@@ -46,11 +50,17 @@ router.get(
 
 router.post(
   "/",
-  passport.authenticate("jwt", { session: false }),
+  // passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
       const body = req.body;
-     
+     const zona = await zonas.buscar_id(body.id_zona)
+     console.log(zona);
+     const productos = await produc.buscar_id(body.id_producto);
+     console.log(productos);
+
+     body.zona_text=zona[0].nombre;
+     body.producto_text=productos[0].nombre;
           const data = body;
           const crear = await returns.crear(data);
        
