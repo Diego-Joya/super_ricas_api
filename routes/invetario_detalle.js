@@ -15,17 +15,23 @@ const router = expres.Router();
 const invetario = new Invetario_detalle();
 
 // CONSULTA MERCANCIA ZONAS
-router.get("/inven_zonas", async (req, res, next) => {
-  try {
-    const cat = await invetario.consult_invetario_zonas();
-    res.json({
-      ok: true,
-      data: cat,
-    });
-  } catch (error) {
-    next(error);
+router.post(
+  "/inven_zonas",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res, next) => {
+    try {
+      const body = req.body;
+      const cat = await invetario.consult_invetario_zonas(body);
+      res.json({
+        ok: true,
+        data: cat,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
+
 // CONSULTA MERCANCIA ZONAS DESTALLES
 
 // router.get("/inven_zonas_det", async (req, res, next) => {
@@ -58,7 +64,7 @@ router.get(
     }
   }
 );
-// CONSULTA MERCACIA POR ID 
+// CONSULTA MERCACIA POR ID
 router.get(
   "/inven_zonas/id/:nombre",
   validatorHandler(get_schema, "params"),
