@@ -35,6 +35,13 @@ class zones_services {
     .catch((err) => console.log(err));
   return rta.rows;
   }
+  
+  async concatenar_zones() {
+    const query = "SELECT id,  (codigo || '-' || nombre) AS nombre  FROM zonas";
+    console.log(query);
+    const rta = await this.pool.query(query);
+    return rta.rows;
+  }
 
   async buscar_id(data) {
     const rta = await this.pool

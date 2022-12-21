@@ -48,6 +48,21 @@ validatorHandler(get_schema, "params"),
   }
 );
 
+router.get("/concat/zones", 
+passport.authenticate('jwt', { session: false}),
+async (req, res, next) => {
+  try {
+    const zon = await zones.concatenar_zones();
+    res.json({
+      ok: true,
+      data: zon,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 router.get(
   "/:nombre",
 passport.authenticate('jwt', { session: false}),
