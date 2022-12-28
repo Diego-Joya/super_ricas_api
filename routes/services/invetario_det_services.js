@@ -14,6 +14,7 @@ class Invetario_detalle {
   async actualizar(idact, body) {
     const fecha = body.fecha_dia;
     const id_zona = body.id_zona;
+    const zona_text = body.id_zona;
     const usuario = body.usuario;
     const estado = "INGRESADA";
     const saldo_base = body.saldo_base;
@@ -23,8 +24,8 @@ class Invetario_detalle {
     const rta = await this.pool
       .query(
         `UPDATE public.inventario_zonas
-        SET id_zona=$1, fecha_modificacion=$2,  fecha_dia=$3, usuario=$4, estado=$5, saldo_base=$6  WHERE id=$7`,
-        [id_zona, fecha_hora, fecha, usuario, estado,saldo_base, idact]
+        SET id_zona=$1, fecha_modificacion=$2,  fecha_dia=$3, usuario=$4, estado=$5, saldo_base=$6, zona_text=$7  WHERE id=$8`,
+        [id_zona, fecha_hora, fecha, usuario, estado,saldo_base,zona_text, idact]
       )
       .catch((err) => console.log(err));
 
@@ -48,6 +49,7 @@ class Invetario_detalle {
   async crear_inv_zona(body) {
     const fecha = body.fecha_dia;
     const id_zona = body.id_zona;
+    const zona_text = body.id_zona;
     const usuario = body.usuario;
     const saldo_base = body.saldo_base;
 
@@ -55,11 +57,11 @@ class Invetario_detalle {
 
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
-    const query = `INSERT INTO public.inventario_zonas(id_zona, fecha_creacion, fecha_dia, usuario, estado, saldo_base)
-      VALUES ($1, $2, $3, $4, $5, $6) RETURNING *, fecha_dia::text as fecha_dia`;
+    const query = `INSERT INTO public.inventario_zonas(id_zona, fecha_creacion, fecha_dia, usuario, estado, saldo_base, zona_text)
+      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *, fecha_dia::text as fecha_dia`;
 
     const rta = await this.pool
-      .query(query, [id_zona, fecha_hora, fecha, usuario, estado,saldo_base])
+      .query(query, [id_zona, fecha_hora, fecha, usuario, estado,saldo_base,zona_text])
       .catch((err) => console.log(err));
     return rta.rows;
   }
@@ -78,6 +80,8 @@ class Invetario_detalle {
     const valor_iva = body.valor_iva;
     const valor_comision = body.valor_comision;
     const valor_venta = body.valor_venta;
+    const nomb_producto = body.nomb_producto;
+
 
     const iva = body.iva;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -94,7 +98,7 @@ class Invetario_detalle {
         `UPDATE public.inventario_zonas_det
         SET id_producto=$1, id_zona=$2, cantidad=$3, fecha_modificacion=$4, cantidad_salida=$5,
          precio_unidad=$6, precio_total=$7, codigo_producto=$8, usuario=$9, id_inventario=$10, 
-         porcen_comision=$11, iva=$12, estado=$13, fecha_salida=$14, valor_comision=$15,valor_venta=$16,valor_iva=$17 where  id=$18`,
+         porcen_comision=$11, iva=$12, estado=$13, fecha_salida=$14, valor_comision=$15,valor_venta=$16,valor_iva=$17, producto_text=$18 where  id=$19`,
         [
           id_producto,
           id_zona,
@@ -113,6 +117,7 @@ class Invetario_detalle {
           valor_comision,
           valor_venta,
           valor_iva,
+          nomb_producto,
           idact,
         ]
       )
@@ -136,14 +141,15 @@ class Invetario_detalle {
     const valor_venta = body.valor_venta;
     const valor_comision = body.valor_comision;
     const valor_iva = body.valor_iva;
+    const nomb_producto = body.nomb_producto;
     const estado = "INGRESADA";
     const cantidad_salida = "0";
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
     const query = `INSERT INTO public.inventario_zonas_det(  fecha_creacion, id_producto, id_zona, cantidad,
       precio_unidad, precio_total, codigo_producto, usuario, id_inventario, porcen_comision, iva,
-       estado,cantidad_salida,valor_venta,valor_comision,valor_iva)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING *`;
+       estado,cantidad_salida,valor_venta,valor_comision,valor_iva,producto_text)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING *`;
 
     const rta = await this.pool
       .query(query, [
@@ -163,6 +169,8 @@ class Invetario_detalle {
         valor_venta,
         valor_comision,
         valor_iva,
+        nomb_producto,
+        
       ])
       .catch((err) => console.log(err));
 
