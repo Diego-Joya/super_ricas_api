@@ -14,7 +14,7 @@ class Invetario_detalle {
   async actualizar(idact, body) {
     const fecha = body.fecha_dia;
     const id_zona = body.id_zona;
-    const zona_text = body.id_zona;
+    const zona_text = body.zona_text;
     const usuario = body.usuario;
     const estado = "INGRESADA";
     const saldo_base = body.saldo_base;
@@ -49,7 +49,7 @@ class Invetario_detalle {
   async crear_inv_zona(body) {
     const fecha = body.fecha_dia;
     const id_zona = body.id_zona;
-    const zona_text = body.id_zona;
+    const zona_text = body.zona_text;
     const usuario = body.usuario;
     const saldo_base = body.saldo_base;
 

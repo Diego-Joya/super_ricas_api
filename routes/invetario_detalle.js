@@ -98,6 +98,7 @@ router.post(
       dta.id_zona = body.id_zona;
       dta.usuario = body.usuario;
       dta.saldo_base = body.saldo_base;
+      dta.zona_text = body.zona_text;
 
       const crear = await invetario.crear_inv_zona(dta);
       const consulta = await invetario.consult_invetario_zonas_id(crear[0].id);
