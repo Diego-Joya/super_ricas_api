@@ -179,13 +179,16 @@ class Invetario_detalle {
 
 // CONSULTA FILTRO
 async consult_invetario_zonas(body) {
-  // const data = body.data;
   const fecha_ini = body.fecha_inicio;
   const fecha_fin = body.fecha_fin;
+  const zona = body.id_zona;
   console.log(fecha_ini);
   let where = ` where 1=1`;
   if( typeof fecha_ini !== 'undefined' && fecha_ini !='' ){
     where +=` and a.fecha_dia between '${fecha_ini}' and '${fecha_fin}'`
+  }
+  if( typeof zona !== 'undefined' ){
+    where +=` and b.id ='${zona}'`
   }
 console.log(where);
   const query =

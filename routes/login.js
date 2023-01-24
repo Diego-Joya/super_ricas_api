@@ -1,6 +1,11 @@
 const expres = require("express");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
+const autservices = require("./services/auth_service");
+
+
+const service = new autservices();
+
 
 const { config } = require("./../config/config");
 
@@ -34,6 +39,26 @@ router.post(
         ok: false,
         message: "Ups error al ingresar",
       });
+    }
+  }
+);
+
+router.post(
+  "/recovery",
+  async (req, res, next) => {
+    
+    try {
+      const email = req.body.email;
+     const rta= await service.resetPasswor(email)
+     console.log(rta);
+
+      res.json(rta);
+    } catch (error) {
+      next(error);
+      // res.json({
+      //   ok: false,
+      //   message: "Ups error al ingresar",
+      // });
     }
   }
 );

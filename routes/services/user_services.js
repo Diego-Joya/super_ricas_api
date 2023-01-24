@@ -79,6 +79,19 @@ class user_service {
     console.log(rta.rows);
     return rta.rows;
   }
+  async consultar_email_user(data) {
+    console.log('jajjaj');
+    console.log(data);
+    const rta = await this.pool
+      .query(
+        `SELECT a.name, a.user_login,a.company,a.id_profile,a.password, a.email,a.photo, a.id as key,b.name as perfil_text FROM users a left join 
+        profiles b on (a.id_profile=b.id) where email=$1`,
+        [data]
+      )
+      .catch((err) => console.log(err));
+    console.log(rta.rows);
+    return rta.rows;
+  }
 
   async validar(data) {
     const rta = await this.pool
