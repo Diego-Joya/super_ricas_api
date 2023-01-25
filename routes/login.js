@@ -63,4 +63,24 @@ router.post(
   }
 );
 
+router.post(
+  "/change-password",
+  async (req, res, next) => {
+    
+    try {
+      const {token, newpassword} = req.body;
+     const rta= await service.changePassword(token, newpassword)
+     console.log(rta);
+
+      res.json(rta);
+    } catch (error) {
+      next(error);
+      // res.json({
+      //   ok: false,
+      //   message: "Ups error al ingresar",
+      // });
+    }
+  }
+);
+
 module.exports = router;

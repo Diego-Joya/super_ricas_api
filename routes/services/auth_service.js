@@ -14,12 +14,15 @@ class auth_services {
     const user = await service.consultar_email_user(mail);
     console.log(user);
     console.log("usuario ");
+    console.log( user[0].id);
     if (user == "") {
       throw boom.unauthorized();
     }
-    const payload ={sub:user.id};
-    const token= jwt.sign(payload, config.jwtsecret, {expiresIn: '5min'});
-    const link= `https://jajjaj/recovery?token=${token} `;
+    const payload ={sub: user[0].id};
+    const token= jwt.sign(payload, config.jwtsecret, {expiresIn: '10min'});
+    const saveToken= await service.Guardartoken(user[0].id, token)
+    // return saveToken;
+    const link= `https://controlsinventarios.com/recovery?token=${token} `;
     const email = {
       from: "maruchispalomino@gmial.com", // sender address
       to: "yekogarcia@yahoo.com", // list of receivers
@@ -38,7 +41,8 @@ class auth_services {
       secure: true,
       auth: {
         user: "joya.d.f.o2017@gmail.com",
-        pass: "vsbgaplxrjzjpnqa",
+        // pass: "vsbgaplxrjzjpnqa",
+        pass: "tyejjglansbcwzzm",
       },
     });
 
@@ -61,6 +65,26 @@ class auth_services {
     if (!verify) {
       throw boom.unauthorized();
     }
+  }
+
+  async changePassword(token, newpassword){
+    try {
+      const payload= jwt.verify(token, config.jwtsecret);
+      console.log(payload);
+      const user = await service.buscar_uno(payload.sub);
+      console.log(user);
+    if (user[0].token !== token) {
+      throw boom.unauthorized();
+    }
+      const actualizar= await service.actualizar_password(payload.sub,newpassword);
+      return {
+        ok: true,
+        message:'Password cambiado exitosamente!'
+      }
+    } catch (error) {
+      throw boom.unauthorized();
+    }
+
   }
 }
 module.exports = auth_services;
