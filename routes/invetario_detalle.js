@@ -99,6 +99,7 @@ router.post(
       dta.usuario = body.usuario;
       dta.saldo_base = body.saldo_base;
       dta.zona_text = body.zona_text;
+      dta.codigo = body.codigo;
 
       const crear = await invetario.crear_inv_zona(dta);
       const consulta = await invetario.consult_invetario_zonas_id(crear[0].id);
@@ -162,7 +163,7 @@ router.post(
 );
 router.patch(
   "/:id",
-  passport.authenticate("jwt", { session: false }),
+  // passport.authenticate("jwt", { session: false }),
 
   // validatorHandler(update_schema, "body"),
   async (req, res, next) => {
@@ -181,6 +182,7 @@ router.patch(
       dta.id_zona = body.id_zona;
       dta.usuario = body.usuario;
       dta.saldo_base = body.saldo_base;
+      dta.codigo = body.codigo;
 
       const actualizar = await invetario.actualizar(id, dta);
 

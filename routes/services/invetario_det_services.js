@@ -16,6 +16,7 @@ class Invetario_detalle {
     const id_zona = body.id_zona;
     const zona_text = body.zona_text;
     const usuario = body.usuario;
+    const codigo = body.codigo;
     const estado = "INGRESADA";
     const saldo_base = body.saldo_base;
     
@@ -24,8 +25,8 @@ class Invetario_detalle {
     const rta = await this.pool
       .query(
         `UPDATE public.inventario_zonas
-        SET id_zona=$1, fecha_modificacion=$2,  fecha_dia=$3, usuario=$4, estado=$5, saldo_base=$6, zona_text=$7  WHERE id=$8`,
-        [id_zona, fecha_hora, fecha, usuario, estado,saldo_base,zona_text, idact]
+        SET id_zona=$1, fecha_modificacion=$2,  fecha_dia=$3, usuario=$4, estado=$5, saldo_base=$6, zona_text=$7, codigo=$8  WHERE id=$9`,
+        [id_zona, fecha_hora, fecha, usuario, estado,saldo_base,zona_text, codigo, idact]
       )
       .catch((err) => console.log(err));
 
@@ -52,16 +53,17 @@ class Invetario_detalle {
     const zona_text = body.zona_text;
     const usuario = body.usuario;
     const saldo_base = body.saldo_base;
+    const codigo = body.codigo;
 
     const estado = "INGRESADA";
 
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
-    const query = `INSERT INTO public.inventario_zonas(id_zona, fecha_creacion, fecha_dia, usuario, estado, saldo_base, zona_text)
-      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *, fecha_dia::text as fecha_dia`;
+    const query = `INSERT INTO public.inventario_zonas(id_zona, fecha_creacion, fecha_dia, usuario, estado, saldo_base, zona_text,codigo)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *, fecha_dia::text as fecha_dia`;
 
     const rta = await this.pool
-      .query(query, [id_zona, fecha_hora, fecha, usuario, estado,saldo_base,zona_text])
+      .query(query, [id_zona, fecha_hora, fecha, usuario, estado,saldo_base,zona_text,codigo])
       .catch((err) => console.log(err));
     return rta.rows;
   }
