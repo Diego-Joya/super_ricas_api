@@ -19,14 +19,24 @@ class Invetario_detalle {
     const codigo = body.codigo;
     const estado = "INGRESADA";
     const saldo_base = body.saldo_base;
-    
+
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
     const rta = await this.pool
       .query(
         `UPDATE public.inventario_zonas
         SET id_zona=$1, fecha_modificacion=$2,  fecha_dia=$3, usuario=$4, estado=$5, saldo_base=$6, zona_text=$7, codigo=$8  WHERE id=$9`,
-        [id_zona, fecha_hora, fecha, usuario, estado,saldo_base,zona_text, codigo, idact]
+        [
+          id_zona,
+          fecha_hora,
+          fecha,
+          usuario,
+          estado,
+          saldo_base,
+          zona_text,
+          codigo,
+          idact,
+        ]
       )
       .catch((err) => console.log(err));
 
@@ -63,7 +73,16 @@ class Invetario_detalle {
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *, fecha_dia::text as fecha_dia`;
 
     const rta = await this.pool
-      .query(query, [id_zona, fecha_hora, fecha, usuario, estado,saldo_base,zona_text,codigo])
+      .query(query, [
+        id_zona,
+        fecha_hora,
+        fecha,
+        usuario,
+        estado,
+        saldo_base,
+        zona_text,
+        codigo,
+      ])
       .catch((err) => console.log(err));
     return rta.rows;
   }
@@ -83,7 +102,6 @@ class Invetario_detalle {
     const valor_comision = body.valor_comision;
     const valor_venta = body.valor_venta;
     const nomb_producto = body.nomb_producto;
-
 
     const iva = body.iva;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -172,43 +190,42 @@ class Invetario_detalle {
         valor_comision,
         valor_iva,
         nomb_producto,
-        
       ])
       .catch((err) => console.log(err));
 
     return rta.rows;
   }
 
-// CONSULTA FILTRO
-async consult_invetario_zonas(body) {
-  const fecha_ini = body.fecha_inicio;
-  const fecha_fin = body.fecha_fin;
-  const zona = body.id_zona;
-  console.log(fecha_ini);
-  let where = ` where 1=1`;
-  if( typeof fecha_ini !== 'undefined' && fecha_ini !='' ){
-    where +=` and a.fecha_dia between '${fecha_ini}' and '${fecha_fin}'`
-  }
-  if( typeof zona !== 'undefined' ){
-    where +=` and b.id ='${zona}'`
-  }
-console.log(where);
-  const query =
-  `select a.*,((select sum(valor_venta::double precision)  from inventario_zonas_det where  id_inventario=a.id) + a.saldo_base
+  // CONSULTA FILTRO
+  async consult_invetario_zonas(body) {
+    const fecha_ini = body.fecha_inicio;
+    const fecha_fin = body.fecha_fin;
+    const zona = body.id_zona;
+    console.log(fecha_ini);
+    let where = ` where 1=1`;
+    if (typeof fecha_ini !== "undefined" && fecha_ini != "") {
+      where += ` and a.fecha_dia between '${fecha_ini}' and '${fecha_fin}'`;
+    }
+    if (typeof zona !== "undefined") {
+      where += ` and b.id ='${zona}'`;
+    }
+    console.log(where);
+    const query = `select a.*,((select sum(valor_venta::double precision)  from inventario_zonas_det where  id_inventario=a.id) + a.saldo_base
   )as valor_venta,((select sum(precio_total::double precision)  from inventario_zonas_det where  id_inventario=a.id
-    )+ a.saldo_base) as precio_total, (select sum(valor_comision::double precision)  from inventario_zonas_det where  id_inventario=a.id
+    )+ a.saldo_base) as precio_total,
+	(select sum(valor_comision::double precision)  from inventario_zonas_det where  id_inventario=a.id
     )as valor_comision,(select sum(valor_iva::double precision)  from inventario_zonas_det where  id_inventario=a.id
-    )as valor_iva,(select sum(valor::double precision)  from pago where  id_iventario=a.id
-    )as valor_ingresos,((select sum(valor_venta::double precision)  from inventario_zonas_det where  id_inventario=a.id) - (select sum(valor::double precision)  from pago where  id_iventario=a.id
-    ))as valor_pendiente,a.fecha_dia::text as fecha_dia, a.id as key, b.nombre as zona_text
+    )as valor_iva,(select sum(valor::double precision)  from pago where  id_iventario=a.id and concepto='INGRESO'
+    )as valor_ingresos,((select sum(valor_venta::double precision)  from inventario_zonas_det where  id_inventario=a.id) -
+						(select sum(valor::double precision)  from pago where  id_iventario=a.id and concepto='INGRESO'
+    ))as valor_pendiente,a.fecha_dia::text as fecha_dia, a.id as key, b.nombre as zona_text,(select sum(valor::double precision)  from pago where  id_iventario=a.id and concepto='FIADO'
+    )as valor_ingresos
      from inventario_zonas a LEFT join zonas b on (a.id_zona=b.id) ${where} order by id desc`;
-  
-  const rta = await this.pool.query(query);
-  console.log(rta.rows.length);
-  return rta.rows;
-}
 
-
+    const rta = await this.pool.query(query);
+    console.log(rta.rows.length);
+    return rta.rows;
+  }
 
   async consult_invetario_zonas_id(data) {
     const rta = await this.pool
