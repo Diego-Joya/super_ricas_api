@@ -17,9 +17,10 @@ class returns_service {
     const cantidad = body.cantidad;
     const fecha = body.fecha;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
+    const estado='PENDIENTE'
 
-    const query = `INSERT INTO public.devolucion(usuario, fecha_creacion, id_zona, zona_text, id_producto, producto_text, cantidad, fecha)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`;
+    const query = `INSERT INTO public.devolucion(usuario, fecha_creacion, id_zona, zona_text, id_producto, producto_text, cantidad, fecha,estado)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`;
     const rta = await this.pool
       .query(query, [
         usuario,
@@ -30,6 +31,7 @@ class returns_service {
         producto_text,
         cantidad,
         fecha,
+        estado
       ])
       .catch((err) => console.log(err));
     return rta.rows;
@@ -45,12 +47,20 @@ class returns_service {
   async buscar_uno(body) {
     // const data = body.data;
     const data= body.buscar;
+    const zona= body.zona;
+    const estado= body.estado;
     const fecha_ini = body.fecha_inicio;
     const fecha_fin = body.fecha_fin;
     console.log(fecha_ini);
     let  where=` where 1=1`
     if(typeof data!=='undefined' && data!==''){
       where+=`  and zona_text::text ILIKE ('%${data}%') or producto_text::text ILIKE ('%${data}%') `
+    }
+    if(typeof zona!=='undefined' && zona!==''){
+      where+=`  and zona_text::text ILIKE ('%${zona}%')`
+    }
+    if(typeof estado!=='undefined' && estado!==''){
+      where+=`  and estado=${estado}`
     }
     if (typeof fecha_ini !== "undefined" && fecha_ini != "") {
        where += ` and fecha between '${fecha_ini}' and '${fecha_fin}'`;
