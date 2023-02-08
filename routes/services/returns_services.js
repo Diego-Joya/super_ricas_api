@@ -57,7 +57,7 @@ class returns_service {
       where+=`  and zona_text::text ILIKE ('%${data}%') or producto_text::text ILIKE ('%${data}%') `
     }
     if(typeof zona!=='undefined' && zona!==''){
-      where+=`  and zona_text::text ILIKE ('%${zona}%')`
+      where+=`  and id_zona=${zona}`
     }
     if(typeof estado!=='undefined' && estado!==''){
       where+=`  and estado=${estado}`
