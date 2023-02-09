@@ -45,7 +45,6 @@ class returns_service {
   }
 
   async buscar_uno(body) {
-    // const data = body.data;
     const data= body.buscar;
     const zona= body.zona;
     const estado= body.estado;
@@ -60,13 +59,12 @@ class returns_service {
       where+=`  and id_zona=${zona}`
     }
     if(typeof estado!=='undefined' && estado!==''){
-      where+=`  and estado=${estado}`
+      where+=`  and estado='${estado}'`
     }
     if (typeof fecha_ini !== "undefined" && fecha_ini != "") {
        where += ` and fecha between '${fecha_ini}' and '${fecha_fin}'`;
     }
 
-    console.log(where);
     const query = `SELECT *,fecha::text as fecha, id as key FROM devolucion  ${where} order by id desc`
     console.log(query);
     const rta = await this.pool
