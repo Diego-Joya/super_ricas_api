@@ -16,11 +16,12 @@ class returns_service {
     const producto_text = body.producto_text;
     const cantidad = body.cantidad;
     const fecha = body.fecha;
+    const tipo = body.tipo;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
-    const estado='PENDIENTE'
+    const estado = "PENDIENTE";
 
-    const query = `INSERT INTO public.devolucion(usuario, fecha_creacion, id_zona, zona_text, id_producto, producto_text, cantidad, fecha,estado)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`;
+    const query = `INSERT INTO public.devolucion(usuario, fecha_creacion, id_zona, zona_text, id_producto, producto_text, cantidad, fecha,estado, tipo_devolucion)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`;
     const rta = await this.pool
       .query(query, [
         usuario,
@@ -31,7 +32,8 @@ class returns_service {
         producto_text,
         cantidad,
         fecha,
-        estado
+        estado,
+        tipo
       ])
       .catch((err) => console.log(err));
     return rta.rows;
@@ -45,33 +47,29 @@ class returns_service {
   }
 
   async buscar_uno(body) {
-    const data= body.buscar;
-    const zona= body.zona;
-    const estado= body.estado;
+    const data = body.buscar;
+    const zona = body.zona;
+    const estado = body.estado;
     const fecha_ini = body.fecha_inicio;
     const fecha_fin = body.fecha_fin;
     console.log(fecha_ini);
-    let  where=` where 1=1`
-    if(typeof data!=='undefined' && data!==''){
-      where+=`  and zona_text::text ILIKE ('%${data}%') or producto_text::text ILIKE ('%${data}%') `
+    let where = ` where 1=1`;
+    if (typeof data !== "undefined" && data !== "") {
+      where += `  and zona_text::text ILIKE ('%${data}%') or producto_text::text ILIKE ('%${data}%') `;
     }
-    if(typeof zona!=='undefined' && zona!==''){
-      where+=`  and id_zona=${zona}`
+    if (typeof zona !== "undefined" && zona !== "") {
+      where += `  and id_zona=${zona}`;
     }
-    if(typeof estado!=='undefined' && estado!==''){
-      where+=`  and estado='${estado}'`
+    if (typeof estado !== "undefined" && estado !== "") {
+      where += `  and estado='${estado}'`;
     }
     if (typeof fecha_ini !== "undefined" && fecha_ini != "") {
-       where += ` and fecha between '${fecha_ini}' and '${fecha_fin}'`;
+      where += ` and fecha between '${fecha_ini}' and '${fecha_fin}'`;
     }
 
-    const query = `SELECT *,fecha::text as fecha, id as key FROM devolucion  ${where} order by id desc`
+    const query = `SELECT *,fecha::text as fecha, id as key FROM devolucion  ${where} order by id desc`;
     console.log(query);
-    const rta = await this.pool
-      .query(
-       query
-      )
-      .catch((err) => console.log(err));
+    const rta = await this.pool.query(query).catch((err) => console.log(err));
     return rta.rows;
   }
 
@@ -82,6 +80,7 @@ class returns_service {
     const id_producto = body.id_producto;
     const producto_text = body.producto_text;
     const cantidad = body.cantidad;
+    const tipo = body.tipo;
     const fecha = body.fecha;
 
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -93,8 +92,8 @@ class returns_service {
     const rta = await this.pool
       .query(
         `UPDATE public.devolucion
-    SET  usuario=$1, fecha_modificacion=$2, id_zona=$3, zona_text=$4, id_producto=$5, producto_text=$6, cantidad=$7, fecha=$8
-    WHERE id=$9 `,
+    SET  usuario=$1, fecha_modificacion=$2, id_zona=$3, zona_text=$4, id_producto=$5, producto_text=$6, cantidad=$7, fecha=$8, tipo_devolucion=$9
+    WHERE id=$10 `,
         [
           usuario,
           fecha_hora,
@@ -104,7 +103,8 @@ class returns_service {
           producto_text,
           cantidad,
           fecha,
-          idact,
+          tipo,
+          idact
         ]
       )
       .catch((err) => console.log(err));
