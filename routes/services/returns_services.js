@@ -16,7 +16,7 @@ class returns_service {
     const producto_text = body.producto_text;
     const cantidad = body.cantidad;
     const fecha = body.fecha;
-    const tipo = body.tipo;
+    const tipo = body.tipo_devolucion;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
     const estado = "PENDIENTE";
 
@@ -80,7 +80,7 @@ class returns_service {
     const id_producto = body.id_producto;
     const producto_text = body.producto_text;
     const cantidad = body.cantidad;
-    const tipo = body.tipo;
+    const tipo = body.tipo_devolucion;
     const fecha = body.fecha;
 
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
