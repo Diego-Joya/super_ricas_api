@@ -67,7 +67,7 @@ router.post(
 
 router.post(
   "/",
-  passport.authenticate("jwt", { session: false }),
+  // passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
       const body = req.body;
@@ -93,11 +93,18 @@ router.post(
 
 router.patch(
   "/:id",
-  passport.authenticate("jwt", { session: false }),
+  // passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
       const { id } = req.params;
       const body = req.body;
+      const zona = await zonas.buscar_id(body.id_zona)
+      console.log(zona);
+      const productos = await produc.buscar_id(body.id_producto);
+      console.log(productos);
+ 
+      body.zona_text=zona[0].nombre;
+      body.producto_text=productos[0].nombre;
       const actualizar = await returns.actualizar(id, body);
       if (actualizar == false) {
         res.json({
