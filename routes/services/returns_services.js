@@ -55,19 +55,19 @@ class returns_service {
     console.log(fecha_ini);
     let where = ` where 1=1`;
     if (typeof data !== "undefined" && data !== "") {
-      where += `  and zona_text::text ILIKE ('%${data}%') or producto_text::text ILIKE ('%${data}%') `;
+      where += `  and a.zona_text::text ILIKE ('%${data}%') or a.producto_text::text ILIKE ('%${data}%') `;
     }
     if (typeof zona !== "undefined" && zona !== "") {
-      where += `  and id_zona=${zona}`;
+      where += `  and a.id_zona=${zona}`;
     }
     if (typeof estado !== "undefined" && estado !== "") {
-      where += `  and estado='${estado}'`;
+      where += `  and a.estado='${estado}'`;
     }
     if (typeof fecha_ini !== "undefined" && fecha_ini != "") {
-      where += ` and fecha between '${fecha_ini}' and '${fecha_fin}'`;
+      where += ` and a.fecha between '${fecha_ini}' and '${fecha_fin}'`;
     }
 
-    const query = `SELECT *,fecha::text as fecha, id as key FROM devolucion  ${where} order by id desc`;
+    const query = `select a.*, b.precio, b.iva from devolucion a left join productos b on (a.id_producto = b.id)   ${where} order by id desc`;
     console.log(query);
     const rta = await this.pool.query(query).catch((err) => console.log(err));
     return rta.rows;
