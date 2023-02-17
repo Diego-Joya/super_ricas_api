@@ -52,6 +52,7 @@ class returns_service {
     const estado = body.estado;
     const fecha_ini = body.fecha_inicio;
     const fecha_fin = body.fecha_fin;
+    const tipo_devolucion = body.tipo_devolucion;
     console.log(fecha_ini);
     let where = ` where 1=1`;
     if (typeof data !== "undefined" && data !== "") {
@@ -66,8 +67,11 @@ class returns_service {
     if (typeof fecha_ini !== "undefined" && fecha_ini != "") {
       where += ` and a.fecha between '${fecha_ini}' and '${fecha_fin}'`;
     }
+    if (typeof tipo_devolucion !== "undefined" && tipo_devolucion != "") {
+      where += ` and a.tipo_devolucion ='${tipo_devolucion}'`;
+    }
 
-    const query = `select a.*, b.precio, b.iva from devolucion a left join productos b on (a.id_producto = b.id)   ${where} order by id desc`;
+    const query = `select a.*, b.precio, b.iva, b.pocen_comision from devolucion a left join productos b on (a.id_producto = b.id)   ${where} order by id desc`;
     console.log(query);
     const rta = await this.pool.query(query).catch((err) => console.log(err));
     return rta.rows;
