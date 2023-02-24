@@ -19,13 +19,17 @@ class Invetario_detalle {
     const codigo = body.codigo;
     const estado = "INGRESADA";
     const saldo_base = body.saldo_base;
+    const total_comision = body.total_comision;
+    const total_iva = body.total_iva;
+    const total_venta = body.total_venta;
 
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
     const rta = await this.pool
       .query(
         `UPDATE public.inventario_zonas
-        SET id_zona=$1, fecha_modificacion=$2,  fecha_dia=$3, usuario=$4, estado=$5, saldo_base=$6, zona_text=$7, codigo=$8  WHERE id=$9`,
+        SET id_zona=$1, fecha_modificacion=$2,  fecha_dia=$3, usuario=$4, estado=$5, saldo_base=$6,
+         zona_text=$7, codigo=$8,total_comision=$9, total_iva=$10,total_venta=$11  WHERE id=$12`,
         [
           id_zona,
           fecha_hora,
@@ -35,6 +39,9 @@ class Invetario_detalle {
           saldo_base,
           zona_text,
           codigo,
+          total_comision,
+          total_iva,
+          total_venta,
           idact,
         ]
       )
@@ -64,13 +71,17 @@ class Invetario_detalle {
     const usuario = body.usuario;
     const saldo_base = body.saldo_base;
     const codigo = body.codigo;
+    const total_comision = body.total_comision;
+    const total_iva = body.total_iva;
+    const total_venta = body.total_venta;
 
     const estado = "INGRESADA";
 
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
-    const query = `INSERT INTO public.inventario_zonas(id_zona, fecha_creacion, fecha_dia, usuario, estado, saldo_base, zona_text,codigo)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *, fecha_dia::text as fecha_dia`;
+    const query = `INSERT INTO public.inventario_zonas(id_zona, fecha_creacion, fecha_dia,
+       usuario, estado, saldo_base, zona_text,codigo,total_comision,total_iva, total_venta)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *, fecha_dia::text as fecha_dia`;
 
     const rta = await this.pool
       .query(query, [
@@ -82,6 +93,9 @@ class Invetario_detalle {
         saldo_base,
         zona_text,
         codigo,
+        total_comision,
+        total_iva,
+        total_venta
       ])
       .catch((err) => console.log(err));
     return rta.rows;
