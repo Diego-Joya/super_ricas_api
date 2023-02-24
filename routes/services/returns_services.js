@@ -71,7 +71,7 @@ class returns_service {
       where += ` and a.tipo_devolucion ='${tipo_devolucion}'`;
     }
 
-    const query = `select a.*, b.precio, b.iva, b.pocen_comision from devolucion a left join productos b on (a.id_producto = b.id)   ${where} order by id desc`;
+    const query = `select a.*, b.precio, b.iva, b.porcen_comision from devolucion a left join productos b on (a.id_producto = b.id)   ${where} order by id desc`;
     console.log(query);
     const rta = await this.pool.query(query).catch((err) => console.log(err));
     return rta.rows;
