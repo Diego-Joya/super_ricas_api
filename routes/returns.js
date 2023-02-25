@@ -64,6 +64,39 @@ router.post(
   }
 );
 
+router.post(
+  "/apply_return",
+  // passport.authenticate("jwt", { session: false }),
+  async (req, res, next) => {
+    try {
+      const body = req.body;
+      let dataFact = await returns.ConsultaInvetario(body.id_factura);
+      console.log(dataFact);
+      let newTotalVenta =
+        parseInt(dataFact[0].total_venta) - parseInt(body.valor_total);
+      let newSubIva = parseInt(dataFact[0].total_iva) - parseInt(body.total_iva);
+      let newComision = parseInt(dataFact[0].total_comision) - parseInt(body.valor_comision);
+      body.newTotalVenta = newTotalVenta;
+      body.newSubIva = newSubIva;
+      body.newComision = newComision;
+      let actualizar = await returns.apply_return_fact(body);
+
+      for (let i = 0; i < body.devolutions.length; i++) {
+        console.log(body.devolutions[i].id);
+        let dta = [];
+        dta.id_factura = body.id_factura;
+        dta.id = body.devolutions[i].id;
+        let actDevFactura = await returns.actDevFactura(dta);
+      }
+      res.json({
+        ok: true,
+        message: 'Devolición asignada correctamente',
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 router.post(
   "/",
@@ -71,16 +104,16 @@ router.post(
   async (req, res, next) => {
     try {
       const body = req.body;
-     const zona = await zonas.buscar_id(body.id_zona)
-     console.log(zona);
-     const productos = await produc.buscar_id(body.id_producto);
-     console.log(productos);
+      const zona = await zonas.buscar_id(body.id_zona);
+      console.log(zona);
+      const productos = await produc.buscar_id(body.id_producto);
+      console.log(productos);
 
-     body.zona_text=zona[0].nombre;
-     body.producto_text=productos[0].nombre;
-          const data = body;
-          const crear = await returns.crear(data);
-       
+      body.zona_text = zona[0].nombre;
+      body.producto_text = productos[0].nombre;
+      const data = body;
+      const crear = await returns.crear(data);
+
       res.json({
         ok: true,
         message: "Registros guardados exitosamente",
@@ -98,13 +131,13 @@ router.patch(
     try {
       const { id } = req.params;
       const body = req.body;
-      const zona = await zonas.buscar_id(body.id_zona)
+      const zona = await zonas.buscar_id(body.id_zona);
       console.log(zona);
       const productos = await produc.buscar_id(body.id_producto);
       console.log(productos);
- 
-      body.zona_text=zona[0].nombre;
-      body.producto_text=productos[0].nombre;
+
+      body.zona_text = zona[0].nombre;
+      body.producto_text = productos[0].nombre;
       const actualizar = await returns.actualizar(id, body);
       if (actualizar == false) {
         res.json({

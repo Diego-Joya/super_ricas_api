@@ -33,7 +33,7 @@ class returns_service {
         cantidad,
         fecha,
         estado,
-        tipo
+        tipo,
       ])
       .catch((err) => console.log(err));
     return rta.rows;
@@ -42,6 +42,13 @@ class returns_service {
   async buscar_todos() {
     const rta = await this.pool
       .query(`SELECT *,fecha::text as fecha, id as key FROM devolucion`)
+      .catch((err) => console.log(err));
+    return rta.rows;
+  }
+
+  async ConsultaInvetario(data) {
+    const rta = await this.pool
+      .query(`SELECT *, id as key FROM inventario_zonas where id=${data}`)
       .catch((err) => console.log(err));
     return rta.rows;
   }
@@ -71,7 +78,7 @@ class returns_service {
       where += ` and a.tipo_devolucion ='${tipo_devolucion}'`;
     }
 
-    const query = `select a.*, b.precio, b.iva, b.porcen_comision from devolucion a left join productos b on (a.id_producto = b.id)   ${where} order by id desc`;
+    const query = `select a.*, a.id as key, b.precio, b.iva, b.porcen_comision from devolucion a left join productos b on (a.id_producto = b.id)   ${where} order by id desc`;
     console.log(query);
     const rta = await this.pool.query(query).catch((err) => console.log(err));
     return rta.rows;
@@ -108,7 +115,7 @@ class returns_service {
           cantidad,
           fecha,
           tipo,
-          idact
+          idact,
         ]
       )
       .catch((err) => console.log(err));
@@ -128,6 +135,38 @@ class returns_service {
       )
       .catch((err) => console.log(err));
     return rta;
+  }
+
+  async apply_return_fact(body) {
+    console.log(body);
+    const newComision = body.newComision;
+    const newTotalVenta = body.newTotalVenta;
+    const newSubIva = body.newSubIva;
+    const id_factura = body.id_factura;
+    const rta = await this.pool
+      .query(
+        `UPDATE public.inventario_zonas
+    SET  total_comision=$1, total_iva=$2, total_venta=$3
+    WHERE id=$4 `,
+        [newComision, newSubIva, newTotalVenta, id_factura]
+      )
+      .catch((err) => console.log(err));
+    return rta.rows;
+  }
+  
+  async actDevFactura(body) {
+    console.log(body);
+    const id_factura = body.id_factura;
+    const id = body.id;
+    const rta = await this.pool
+      .query(
+        `UPDATE public.devolucion
+    SET  id_factura=$1
+    WHERE id=$2 `,
+        [id_factura,id]
+      )
+      .catch((err) => console.log(err));
+    return rta.rows;
   }
 }
 module.exports = returns_service;
