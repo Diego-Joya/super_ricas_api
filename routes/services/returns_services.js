@@ -158,12 +158,13 @@ class returns_service {
     console.log(body);
     const id_factura = body.id_factura;
     const id = body.id;
+    const estado = 'APLICADA';
     const rta = await this.pool
       .query(
         `UPDATE public.devolucion
-    SET  id_factura=$1
-    WHERE id=$2 `,
-        [id_factura,id]
+    SET  id_factura=$1,estado=$2
+    WHERE id=$3 `,
+        [id_factura,estado, id]
       )
       .catch((err) => console.log(err));
     return rta.rows;
