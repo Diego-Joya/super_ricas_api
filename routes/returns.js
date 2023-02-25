@@ -71,7 +71,6 @@ router.post(
     try {
       const body = req.body;
       let dataFact = await returns.ConsultaInvetario(body.id_factura);
-      console.log(dataFact);
       let newTotalVenta =
         parseInt(dataFact[0].total_venta) - parseInt(body.valor_total);
       let newSubIva = parseInt(dataFact[0].total_iva) - parseInt(body.total_iva);
@@ -82,7 +81,6 @@ router.post(
       let actualizar = await returns.apply_return_fact(body);
 
       for (let i = 0; i < body.devolutions.length; i++) {
-        console.log(body.devolutions[i].id);
         let dta = [];
         dta.id_factura = body.id_factura;
         dta.id = body.devolutions[i].id;
@@ -90,7 +88,7 @@ router.post(
       }
       res.json({
         ok: true,
-        message: 'Devolición asignada correctamente',
+        message: 'Devolución aplicada correctamente',
       });
     } catch (error) {
       next(error);
@@ -105,9 +103,7 @@ router.post(
     try {
       const body = req.body;
       const zona = await zonas.buscar_id(body.id_zona);
-      console.log(zona);
       const productos = await produc.buscar_id(body.id_producto);
-      console.log(productos);
 
       body.zona_text = zona[0].nombre;
       body.producto_text = productos[0].nombre;
@@ -132,9 +128,7 @@ router.patch(
       const { id } = req.params;
       const body = req.body;
       const zona = await zonas.buscar_id(body.id_zona);
-      console.log(zona);
       const productos = await produc.buscar_id(body.id_producto);
-      console.log(productos);
 
       body.zona_text = zona[0].nombre;
       body.producto_text = productos[0].nombre;

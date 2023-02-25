@@ -60,7 +60,6 @@ class returns_service {
     const fecha_ini = body.fecha_inicio;
     const fecha_fin = body.fecha_fin;
     const tipo_devolucion = body.tipo_devolucion;
-    console.log(fecha_ini);
     let where = ` where 1=1`;
     if (typeof data !== "undefined" && data !== "") {
       where += `  and a.zona_text::text ILIKE ('%${data}%') or a.producto_text::text ILIKE ('%${data}%') `;
@@ -79,7 +78,7 @@ class returns_service {
     }
 
     const query = `select a.*, a.id as key, b.precio, b.iva, b.porcen_comision from devolucion a left join productos b on (a.id_producto = b.id)   ${where} order by id desc`;
-    console.log(query);
+   
     const rta = await this.pool.query(query).catch((err) => console.log(err));
     return rta.rows;
   }
@@ -138,7 +137,6 @@ class returns_service {
   }
 
   async apply_return_fact(body) {
-    console.log(body);
     const newComision = body.newComision;
     const newTotalVenta = body.newTotalVenta;
     const newSubIva = body.newSubIva;
@@ -155,7 +153,6 @@ class returns_service {
   }
   
   async actDevFactura(body) {
-    console.log(body);
     const id_factura = body.id_factura;
     const id = body.id;
     const estado = 'APLICADA';
