@@ -145,7 +145,7 @@ router.delete(
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      const delete_returns = await returns.delete(id);
+      const delete_returns = await balance.delete(id);
       if (delete_returns == false) {
         res.json({
           ok: false,

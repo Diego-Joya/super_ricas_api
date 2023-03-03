@@ -116,6 +116,22 @@ class balances_services {
       .catch((err) => console.log(err));
     return rta;
   }
+  //BORRA SALDOS DET
+  
+  async delete(id_delete) {
+    let consu = await this.validar_saldo_det(id_delete);
+    if (consu == "") {
+      return false;
+    }
+    const rta = await this.pool
+      .query(
+        `DELETE FROM public.saldos_det
+    WHERE id=$1`,
+        [id_delete]
+      )
+      .catch((err) => console.log(err));
+    return rta;
+  }
   //CONSULTA SALDOS DETALLE POR ID SALDO
   async consult_saldos_det(data) {
     const rta = await this.pool
@@ -134,6 +150,12 @@ class balances_services {
   }
 
   async validar(data) {
+    const rta = await this.pool
+      .query(`SELECT *, id as key FROM saldos where id=${data} `)
+      .catch((err) => console.log(err));
+    return rta.rows;
+  }
+  async validar_saldo_det(data) {
     const rta = await this.pool
       .query(`SELECT *, id as key FROM saldos where id=${data} `)
       .catch((err) => console.log(err));
@@ -183,20 +205,6 @@ class balances_services {
   }
 
 
-  async delete(id_delete) {
-    let consu = await this.buscar_uno(id_delete);
-    if (consu == "") {
-      return false;
-    }
-    const rta = await this.pool
-      .query(
-        `DELETE FROM public.devolucion
-    WHERE id=$1`,
-        [id_delete]
-      )
-      .catch((err) => console.log(err));
-    return rta;
-  }
 
   async apply_return_fact(body) {
     const newComision = body.newComision;
