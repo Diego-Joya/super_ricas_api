@@ -46,7 +46,7 @@ router.get(
 
 router.post(
   "/",
-  passport.authenticate("jwt", { session: false }),
+  // passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
       const body = req.body;
@@ -77,7 +77,7 @@ router.post(
 
 router.patch(
   "/:id",
-  passport.authenticate("jwt", { session: false }),
+  // passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
       const { id } = req.params;

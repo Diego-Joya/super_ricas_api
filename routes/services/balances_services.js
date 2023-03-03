@@ -95,7 +95,7 @@ class balances_services {
     const producto = body.id_producto;
     const producto_text = body.producto_text;
     const cantidad = body.cantidad;
-    const id_saldo = body.idact;
+    const id_saldo = body.id_encabezado;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
    
