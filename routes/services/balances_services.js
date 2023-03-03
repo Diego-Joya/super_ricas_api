@@ -214,7 +214,7 @@ class balances_services {
       where += ` and a.id ='${id}'`;
     }
 
-    const query = `select * from saldos a LEFT join saldos_det b on (a.id=b.id_saldo)  ${where} order by a.id desc`;
+    const query = `select *, b.id as key from saldos a LEFT join saldos_det b on (a.id=b.id_saldo)  ${where} order by a.id desc`;
    console.log(query);
     const rta = await this.pool.query(query).catch((err) => console.log(err));
     return rta.rows;
