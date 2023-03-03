@@ -12,13 +12,11 @@ const balance = new balances();
 const zonas = new zonas_services();
 
 router.get(
-  "/:id",
-  passport.authenticate("jwt", { session: false }),
+  "/",
+  // passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
-      const { id } = req.params;
-
-      const consulta_total = await returns.buscar_uno(id);
+      const consulta_total = await balance.buscar_todos();
       res.json({
         ok: true,
         data: consulta_total,
@@ -29,13 +27,13 @@ router.get(
   }
 );
 router.get(
-  "/",
-  // passport.authenticate("jwt", { session: false }),
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
       const { id } = req.params;
 
-      const consulta_total = await balance.buscar_todos();
+      const consulta_total = await balance.validar(id);
       res.json({
         ok: true,
         data: consulta_total,
@@ -48,7 +46,7 @@ router.get(
 
 router.post(
   "/",
-  // passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
       const body = req.body;
@@ -78,7 +76,7 @@ router.post(
 
 router.patch(
   "/:id",
-  // passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
       const { id } = req.params;
@@ -140,13 +138,13 @@ router.patch(
 );
 
 router.delete(
-  "/:id",
+  "/saldos_det/:id",
   passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      const delete_returns = await balance.delete(id);
-      if (delete_returns == false) {
+      const delete_saldos_det = await balance.delete_saldos_det_uno(id);
+      if (delete_saldos_det == false) {
         res.json({
           ok: false,
           message: "El registro no existe en la bd",
@@ -159,6 +157,34 @@ router.delete(
           id,
         });
       }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.delete(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const consulta = await balance.validar(id);
+      if (consulta == "") {
+        res.json({
+          ok: false,
+          messege: "No se encontro el registro en la bd",
+        });
+      }
+
+      const delete_saldos = await balance.delete_saldos(id);
+      const delete_saldos_det = await balance.delete_saldos_det(id);
+
+      res.json({
+        ok: true,
+        message: "Registro eliminado correctamente!",
+        id,
+      });
     } catch (error) {
       next(error);
     }

@@ -116,16 +116,44 @@ class balances_services {
       .catch((err) => console.log(err));
     return rta;
   }
-  //BORRA SALDOS DET
+  //BORRA SALDOS DET UNO
   
-  async delete(id_delete) {
+  async delete_saldos_det_uno(id_delete) {
     let consu = await this.validar_saldo_det(id_delete);
+    console.log('jajajja');
     if (consu == "") {
       return false;
     }
     const rta = await this.pool
       .query(
         `DELETE FROM public.saldos_det
+    WHERE id=$1`,
+        [id_delete]
+      )
+      .catch((err) => console.log(err));
+    return rta;
+  }
+  //BORRA SALDOS DET MASIVOS
+  
+  async delete_saldos_det(id_delete) {
+    const rta = await this.pool
+      .query(
+        `DELETE FROM public.saldos_det
+    WHERE id_saldo=$1`,
+        [id_delete]
+      )
+      .catch((err) => console.log(err));
+    return rta;
+  }
+  //ELIMINAR SALDOS
+  async delete_saldos(id_delete) {
+    let consu = await this.validar(id_delete);
+    if (consu == "") {
+      return false;
+    }
+    const rta = await this.pool
+      .query(
+        `DELETE FROM public.saldos
     WHERE id=$1`,
         [id_delete]
       )
@@ -148,7 +176,7 @@ class balances_services {
       .catch((err) => console.log(err));
     return rta.rows;
   }
-
+// CONSULTA SALDOS ID
   async validar(data) {
     const rta = await this.pool
       .query(`SELECT *, id as key FROM saldos where id=${data} `)
@@ -157,22 +185,11 @@ class balances_services {
   }
   async validar_saldo_det(data) {
     const rta = await this.pool
-      .query(`SELECT *, id as key FROM saldos where id=${data} `)
+      .query(`SELECT *, id as key FROM saldos_det where id=${data} `)
       .catch((err) => console.log(err));
     return rta.rows;
   }
 
-
-
-
-
-
-  async ConsultaInvetario(data) {
-    const rta = await this.pool
-      .query(`SELECT *, id as key FROM inventario_zonas where id=${data}`)
-      .catch((err) => console.log(err));
-    return rta.rows;
-  }
 
   async buscar_uno(body) {
     const data = body.buscar;
