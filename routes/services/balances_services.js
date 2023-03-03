@@ -172,7 +172,7 @@ class balances_services {
   }
   async buscar_todos() {
     const rta = await this.pool
-      .query(`SELECT *,fecha::text as fecha, id as key FROM saldos`)
+      .query(`SELECT *,fecha::text as fecha, numero_factura as cod_factura, id as key FROM saldos`)
       .catch((err) => console.log(err));
     return rta.rows;
   }
@@ -192,18 +192,17 @@ class balances_services {
 
 
   async buscar_uno(body) {
-    const data = body.buscar;
+    const id = body.id;
     const zona = body.zona;
     const estado = body.estado;
     const fecha_ini = body.fecha_inicio;
     const fecha_fin = body.fecha_fin;
-    const tipo_devolucion = body.tipo_devolucion;
     let where = ` where 1=1`;
-    if (typeof data !== "undefined" && data !== "") {
-      where += `  and a.zona_text::text ILIKE ('%${data}%') or a.producto_text::text ILIKE ('%${data}%') `;
-    }
+    // if (typeof data !== "undefined" && data !== "") {
+    //   where += `  and a.zona_text::text ILIKE ('%${data}%') or a.producto_text::text ILIKE ('%${data}%') `;
+    // }
     if (typeof zona !== "undefined" && zona !== "") {
-      where += `  and a.id_zona=${zona}`;
+      where += `  and a.zona=${zona}`;
     }
     if (typeof estado !== "undefined" && estado !== "") {
       where += `  and a.estado='${estado}'`;
@@ -211,12 +210,12 @@ class balances_services {
     if (typeof fecha_ini !== "undefined" && fecha_ini != "") {
       where += ` and a.fecha between '${fecha_ini}' and '${fecha_fin}'`;
     }
-    if (typeof tipo_devolucion !== "undefined" && tipo_devolucion != "") {
-      where += ` and a.tipo_devolucion ='${tipo_devolucion}'`;
+    if (typeof id !== "undefined" && id != "") {
+      where += ` and a.id ='${id}'`;
     }
 
-    const query = `select a.*, a.id as key, b.precio, b.iva, b.porcen_comision from devolucion a left join productos b on (a.id_producto = b.id)   ${where} order by id desc`;
-   
+    const query = `select * from saldos a LEFT join saldos_det b on (a.id=b.id_saldo)  ${where} order by a.id desc`;
+   console.log(query);
     const rta = await this.pool.query(query).catch((err) => console.log(err));
     return rta.rows;
   }

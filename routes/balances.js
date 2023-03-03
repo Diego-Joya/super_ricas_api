@@ -67,6 +67,7 @@ router.post(
       res.json({
         ok: true,
         message: "Registros guardados exitosamente",
+        data: crear[0]
       });
     } catch (error) {
       next(error);
@@ -184,6 +185,23 @@ router.delete(
         ok: true,
         message: "Registro eliminado correctamente!",
         id,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.post(
+  "/filters",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res, next) => {
+    try {
+      const body = req.body;
+      const cat = await balance.buscar_uno(body);
+      res.json({
+        ok: true,
+        data: cat,
       });
     } catch (error) {
       next(error);
