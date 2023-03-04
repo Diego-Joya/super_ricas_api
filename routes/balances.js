@@ -1,6 +1,8 @@
 const expres = require("express");
 const balances = require("./services/balances_services");
 const zonas_services = require("./services/zones_service");
+const returns_service = require("./services/returns_services");
+
 
 // const boom = require("@hapi/boom");
 const validatorHandler = require("./../middlewares/validator_handler");
@@ -10,7 +12,7 @@ const router = expres.Router();
 
 const balance = new balances();
 const zonas = new zonas_services();
-
+const returns = new returns_service();
 router.get(
   "/",
   // passport.authenticate("jwt", { session: false }),
@@ -83,6 +85,26 @@ router.post(
         body.productos[i].usuario = body.usuario;
         const crear_det = await balance.crear_saldos_det(body.productos[i]);
       }
+
+      
+      const bander='balances'
+      let dataFact = await returns.ConsultaInvetario(body.cod_factura,bander);
+      console.log(dataFact);
+      let newTotalVenta =
+        parseInt(dataFact[0].total_venta) - parseInt(body.valor_venta);
+      let newSubIva = parseInt(dataFact[0].total_iva) - parseInt(body.valor_iva);
+      let newComision = parseInt(dataFact[0].total_comision) - parseInt(body.valor_comision);
+
+      body.newTotalVenta = newTotalVenta;
+      body.newSubIva = newSubIva;
+      body.newComision = newComision;
+      body.id_saldo =  crear[0].id;
+      let act_factura = await balance.apply_saldo_fac(body);
+      
+
+
+
+
       res.json({
         ok: true,
         message: "Registros guardados exitosamente",
@@ -147,6 +169,8 @@ router.patch(
           console.log(crear_det);
         }
       }
+
+
       res.json({
         ok: true,
         message: "Registro actualizado correctamente"

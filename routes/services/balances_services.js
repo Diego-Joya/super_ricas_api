@@ -16,10 +16,19 @@ class balances_services {
     const producto_text = body.producto_text;
     const cantidad = body.cantidad;
     const id_saldo = body.id_encabezado;
+    const codigo_producto = body.codigo_producto;
+    const precio_unidad = body.precio_unidad;
+    const precio_total = body.precio_total;
+    const iva = body.iva;
+    const porcen_comision = body.porcen_comision;
+    const valor_iva = body.valor_iva;
+    const valor_comision = body.valor_comision;
+    const valor_venta = body.valor_venta;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
-    const query = `INSERT INTO public.saldos_det(fecha, usuario, id_producto,producto_text, cantidad, id_saldo)
-     VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
+    const query = `INSERT INTO public.saldos_det(fecha, usuario, id_producto,producto_text, cantidad, id_saldo,
+      codigo_producto, precio_unidad, precio_total, iva, porcen_comision, valor_iva, valor_comision, valor_venta)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,$14 ) RETURNING *`;
     const rta = await this.pool
       .query(query, [
         fecha_hora,
@@ -28,6 +37,10 @@ class balances_services {
         producto_text,
         cantidad,
         id_saldo,
+        codigo_producto,
+        precio_unidad,
+        precio_total,
+        iva, porcen_comision, valor_iva, valor_comision, valor_venta
       ])
       .catch((err) => console.log(err));
     return rta.rows;
@@ -169,9 +182,11 @@ class balances_services {
   //CONSULTA INVENTARIO POR CODIGO FACTURA
   async consult_invetario_cod(data) {
     const rta = await this.pool
-      .query(`
+      .query(
+        `
       select *,b.id as key from inventario_zonas a LEFT JOIN inventario_zonas_det b on 
-      (a.id=b.id_inventario) where a.codigo='${data}' `)
+      (a.id=b.id_inventario) where a.codigo='${data}' `
+      )
       .catch((err) => console.log(err));
     return rta.rows;
   }
@@ -212,17 +227,18 @@ class balances_services {
     return rta.rows;
   }
 
-  async apply_return_fact(body) {
+  async apply_saldo_fac(body) {
     const newComision = body.newComision;
     const newTotalVenta = body.newTotalVenta;
     const newSubIva = body.newSubIva;
-    const id_factura = body.id_factura;
+    const id_factura = body.cod_factura;
+    const id_saldo = body.id_saldo;
     const rta = await this.pool
       .query(
         `UPDATE public.inventario_zonas
-    SET  total_comision=$1, total_iva=$2, total_venta=$3
-    WHERE id=$4 `,
-        [newComision, newSubIva, newTotalVenta, id_factura]
+    SET  total_comision=$1, total_iva=$2, total_venta=$3, id_saldo=$4
+    WHERE codigo=$5 `,
+        [newComision, newSubIva, newTotalVenta, id_saldo, id_factura]
       )
       .catch((err) => console.log(err));
     return rta.rows;

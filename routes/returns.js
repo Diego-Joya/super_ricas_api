@@ -70,7 +70,8 @@ router.post(
   async (req, res, next) => {
     try {
       const body = req.body;
-      let dataFact = await returns.ConsultaInvetario(body.id_factura);
+      const bander='returns'
+      let dataFact = await returns.ConsultaInvetario(body.id_factura,bander);
       let newTotalVenta =
         parseInt(dataFact[0].total_venta) - parseInt(body.valor_total);
       let newSubIva = parseInt(dataFact[0].total_iva) - parseInt(body.total_iva);

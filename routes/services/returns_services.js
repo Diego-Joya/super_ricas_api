@@ -46,9 +46,16 @@ class returns_service {
     return rta.rows;
   }
 
-  async ConsultaInvetario(data) {
+  async ConsultaInvetario(data, bandera) {
+     let where = ` where 1=1`;
+    if (typeof bandera !== "undefined" && bandera == "balances") {
+      where += ` and  codigo='${data}'`;
+    }else{
+      where += ` and id=${data}`;
+
+    }
     const rta = await this.pool
-      .query(`SELECT *, id as key FROM inventario_zonas where id=${data}`)
+      .query(`SELECT *, id as key FROM inventario_zonas ${where}`)
       .catch((err) => console.log(err));
     return rta.rows;
   }
