@@ -40,7 +40,11 @@ class balances_services {
         codigo_producto,
         precio_unidad,
         precio_total,
-        iva, porcen_comision, valor_iva, valor_comision, valor_venta
+        iva,
+        porcen_comision,
+        valor_iva,
+        valor_comision,
+        valor_venta,
       ])
       .catch((err) => console.log(err));
     return rta.rows;
@@ -52,13 +56,27 @@ class balances_services {
     const id_zona = body.zona;
     const zona_text = body.zona_text;
     const codigo = body.cod_factura;
+    const valor_venta = body.valor_venta;
+    const valor_iva = body.valor_iva;
+    const valor_comision = body.valor_comision;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
     const estado = "PENDIENTE";
 
-    const query = `INSERT INTO public.saldos(fecha, usuario, zona, zona_text, numero_factura, estado)
-     VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
+    const query = `INSERT INTO public.saldos(fecha, usuario, zona, zona_text, numero_factura, estado,
+      valor_venta, valor_iva, valor_comision)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`;
     const rta = await this.pool
-      .query(query, [fecha_hora, usuario, id_zona, zona_text, codigo, estado])
+      .query(query, [
+        fecha_hora,
+        usuario,
+        id_zona,
+        zona_text,
+        codigo,
+        estado,
+        valor_venta,
+        valor_iva,
+        valor_comision,
+      ])
       .catch((err) => console.log(err));
     return rta.rows;
   }
@@ -220,7 +238,7 @@ class balances_services {
       where += ` and a.id ='${id}'`;
     }
 
-    const query = `select b.*,a.zona,a.zona_text, b.producto_text,c.precio,c.iva,c.porcen_comision,c.codigo, b.id as key from saldos a LEFT join saldos_det b on (a.id=b.id_saldo)
+    const query = `select b.*, b.producto_text as nomb_producto,  a.zona,a.zona_text, b.producto_text,c.precio,c.iva,c.porcen_comision,c.codigo, b.id as key from saldos a LEFT join saldos_det b on (a.id=b.id_saldo)
     left join productos c on (b.id_producto = c.id) ${where} order by a.id desc`;
     console.log(query);
     const rta = await this.pool.query(query).catch((err) => console.log(err));
