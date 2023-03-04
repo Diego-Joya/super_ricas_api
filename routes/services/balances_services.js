@@ -45,14 +45,7 @@ class balances_services {
     const query = `INSERT INTO public.saldos(fecha, usuario, zona, zona_text, numero_factura, estado)
      VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
     const rta = await this.pool
-      .query(query, [
-        fecha_hora,
-        usuario,
-        id_zona,
-        zona_text,
-        codigo,
-        estado,
-      ])
+      .query(query, [fecha_hora, usuario, id_zona, zona_text, codigo, estado])
       .catch((err) => console.log(err));
     return rta.rows;
   }
@@ -74,22 +67,14 @@ class balances_services {
       .query(
         `UPDATE public.saldos
     SET  fecha=$1, usuario=$2, zona=$3, zona_text=$4, numero_factura=$5, estado=$6 WHERE id=$7 `,
-        [
-          fecha_hora,
-          usuario,
-          id_zona,
-          zona_text,
-          codigo,
-          estado,
-          idact
-        ]
+        [fecha_hora, usuario, id_zona, zona_text, codigo, estado, idact]
       )
       .catch((err) => console.log(err));
     return rta;
   }
   // ACTUALIZAR SALDOS DETALLES
   async actualizar_saldos_det(idact, body) {
-    console.log('hola');
+    console.log("hola");
     console.log(body);
     const usuario = body.usuario;
     const producto = body.id_producto;
@@ -98,7 +83,6 @@ class balances_services {
     const id_saldo = body.id_encabezado;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
-   
     const rta = await this.pool
       .query(
         `UPDATE public.saldos_det
@@ -110,17 +94,17 @@ class balances_services {
           producto_text,
           cantidad,
           id_saldo,
-          idact
+          idact,
         ]
       )
       .catch((err) => console.log(err));
     return rta;
   }
   //BORRA SALDOS DET UNO
-  
+
   async delete_saldos_det_uno(id_delete) {
     let consu = await this.validar_saldo_det(id_delete);
-    console.log('jajajja');
+    console.log("jajajja");
     if (consu == "") {
       return false;
     }
@@ -134,7 +118,7 @@ class balances_services {
     return rta;
   }
   //BORRA SALDOS DET MASIVOS
-  
+
   async delete_saldos_det(id_delete) {
     const rta = await this.pool
       .query(
@@ -163,20 +147,19 @@ class balances_services {
   //CONSULTA SALDOS DETALLE POR ID SALDO
   async consult_saldos_det(data) {
     const rta = await this.pool
-      .query(
-        `select *, id as key from saldos_det where id_saldo = $1`,
-        [data]
-      )
+      .query(`select *, id as key from saldos_det where id_saldo = $1`, [data])
       .catch((err) => console.log(err));
     return rta.rows;
   }
   async buscar_todos() {
     const rta = await this.pool
-      .query(`SELECT *,fecha::text as fecha, numero_factura as cod_factura, id as key FROM saldos`)
+      .query(
+        `SELECT *,fecha::text as fecha, numero_factura as cod_factura, id as key FROM saldos`
+      )
       .catch((err) => console.log(err));
     return rta.rows;
   }
-// CONSULTA SALDOS ID
+  // CONSULTA SALDOS ID
   async validar(data) {
     const rta = await this.pool
       .query(`SELECT *, id as key FROM saldos where id=${data} `)
@@ -189,7 +172,6 @@ class balances_services {
       .catch((err) => console.log(err));
     return rta.rows;
   }
-
 
   async buscar_uno(body) {
     const id = body.id;
@@ -214,13 +196,12 @@ class balances_services {
       where += ` and a.id ='${id}'`;
     }
 
-    const query = `select *, b.id as key from saldos a LEFT join saldos_det b on (a.id=b.id_saldo)  ${where} order by a.id desc`;
-   console.log(query);
+    const query = `select b.*,a.zona,a.zona_text, b.producto_text,c.precio,c.iva,c.porcen_comision,c.codigo, b.id as key from saldos a LEFT join saldos_det b on (a.id=b.id_saldo)
+    left join productos c on (b.id_producto = c.id) ${where} order by a.id desc`;
+    console.log(query);
     const rta = await this.pool.query(query).catch((err) => console.log(err));
     return rta.rows;
   }
-
-
 
   async apply_return_fact(body) {
     const newComision = body.newComision;
@@ -237,17 +218,17 @@ class balances_services {
       .catch((err) => console.log(err));
     return rta.rows;
   }
-  
+
   async actDevFactura(body) {
     const id_factura = body.id_factura;
     const id = body.id;
-    const estado = 'APLICADA';
+    const estado = "APLICADA";
     const rta = await this.pool
       .query(
         `UPDATE public.devolucion
     SET  id_factura=$1,estado=$2
     WHERE id=$3 `,
-        [id_factura,estado, id]
+        [id_factura, estado, id]
       )
       .catch((err) => console.log(err));
     return rta.rows;
