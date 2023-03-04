@@ -26,6 +26,7 @@ router.get(
     }
   }
 );
+
 router.get(
   "/:id",
   passport.authenticate("jwt", { session: false }),
@@ -34,6 +35,24 @@ router.get(
       const { id } = req.params;
 
       const consulta_total = await balance.validar(id);
+      res.json({
+        ok: true,
+        data: consulta_total,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.get(
+  "/cons_invetario/:id",
+  // passport.authenticate("jwt", { session: false }),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+
+      const consulta_total = await balance.consult_invetario_cod(id);
       res.json({
         ok: true,
         data: consulta_total,

@@ -166,6 +166,15 @@ class balances_services {
       .catch((err) => console.log(err));
     return rta.rows;
   }
+  //CONSULTA INVENTARIO POR CODIGO FACTURA
+  async consult_invetario_cod(data) {
+    const rta = await this.pool
+      .query(`
+      select *,b.id as key from inventario_zonas a LEFT JOIN inventario_zonas_det b on 
+      (a.id=b.id_inventario) where a.codigo='${data}' `)
+      .catch((err) => console.log(err));
+    return rta.rows;
+  }
   async validar_saldo_det(data) {
     const rta = await this.pool
       .query(`SELECT *, id as key FROM saldos_det where id=${data} `)
