@@ -11,12 +11,10 @@ class sales_services {
     // const data = body.data;
     const fecha_ini = body.fecha_inicio;
     const fecha_fin = body.fecha_fin;
-    console.log(fecha_ini);
     let where = ` where 1=1`;
     if (typeof fecha_ini !== "undefined" && fecha_ini != "") {
       where += ` and a.fecha_dia between '${fecha_ini}' and '${fecha_fin}'`;
     }
-    console.log(where);
     const query = `select a.*,((select sum(valor_venta::double precision)  from inventario_zonas_det where  id_inventario=a.id) + a.saldo_base
     )as valor_venta,((select sum(precio_total::double precision)  from inventario_zonas_det where  id_inventario=a.id
       )+ a.saldo_base) as precio_total, (select sum(valor_comision::double precision)  from inventario_zonas_det where  id_inventario=a.id
@@ -27,7 +25,6 @@ class sales_services {
        from inventario_zonas a LEFT join zonas b on (a.id_zona=b.id) ${where} order by id desc`;
 
     const rta = await this.pool.query(query);
-    console.log(rta.rows.length);
     return rta.rows;
   }
 }

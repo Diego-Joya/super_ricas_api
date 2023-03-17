@@ -60,7 +60,6 @@ router.post(
   validatorHandler(create_schema, "body"),
   async (req, res) => {
     const body = req.body;
-    console.log(body);
     const validar = await service.validar_user(body.user);
     if (validar != false) {
       res.json({
@@ -86,10 +85,8 @@ router.post(
     const body = req.body;
     const id = body.id;
     const consul = await service.consulta_password(id);
-    console.log(consul);
     let passport = consul[0].password;
     const verify = await bcrypt.compare(body.password, passport);
-    console.log(verify);
     if (verify) {
       res.json({
         ok: true,

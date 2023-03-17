@@ -50,7 +50,6 @@ router.post(
     try {
       const email = req.body.email;
      const rta= await service.resetPasswor(email)
-     console.log(rta);
 
       res.json(rta);
     } catch (error) {
@@ -70,7 +69,6 @@ router.post(
     try {
       const {token, newpassword} = req.body;
      const rta= await service.changePassword(token, newpassword)
-     console.log(rta);
 
       res.json(rta);
     } catch (error) {

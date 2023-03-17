@@ -10,7 +10,6 @@ class balances_services {
 
   // CREAR SALDOS DET
   async crear_saldos_det(body) {
-    console.log(body);
     const usuario = body.usuario;
     const producto = body.id_producto;
     const producto_text = body.producto_text;
@@ -51,7 +50,6 @@ class balances_services {
   }
   // CREAR SALDOS
   async crear(body) {
-    console.log(body);
     const usuario = body.usuario;
     const id_zona = body.zona;
     const zona_text = body.zona_text;
@@ -82,7 +80,6 @@ class balances_services {
   }
   // ACTUALIZAR SALDOS
   async actualizar(idact, body) {
-    console.log(body);
     const usuario = body.usuario;
     const id_zona = body.zona;
     const zona_text = body.zona_text;
@@ -120,8 +117,6 @@ class balances_services {
   }
   // ACTUALIZAR SALDOS DETALLES
   async actualizar_saldos_det(idact, body) {
-    console.log("hola");
-    console.log(body);
     const usuario = body.usuario;
     const producto = body.id_producto;
     const producto_text = body.producto_text;

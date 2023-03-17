@@ -9,7 +9,6 @@ class inv_zones_services {
   }
 
   async crear(body) {
-    console.log(body)
     const id_producto = body.id_producto;
     const id_zona = body.id_zona;
     const cantidad = body.cantidad;
@@ -24,7 +23,6 @@ class inv_zones_services {
     const query = `INSERT INTO public.inventario_zonas(fecha_creacion, id_producto, id_zona,
        cantidad, precio_unidad, precio_total, codigo_producto, usuario, saldo_base )
      VALUES ($1,$2,$3,$4, $5, $6, $7, $8, $9) RETURNING *`;
-    console.log(query);
     const rta = await this.pool
       .query(query, [
         fecha_hora,
@@ -45,7 +43,6 @@ class inv_zones_services {
     const query = `select a.*, b.nombre as nom_producto,  c.nombre as nom_zona from inventario_zonas a left join productos b on
     (a.id_producto = b.id) left join zonas c on (a.id_zona = c. id)`;
     const rta = await this.pool.query(query);
-    console.log(rta.rows);
     return rta.rows;
   }
 
@@ -55,9 +52,7 @@ class inv_zones_services {
      where b.nombre ILIKE ('%${data}%') OR c.nombre ILIKE ('%${data}%') OR b.codigo ILIKE ('%${data}%') OR a.id::text ILIKE ('%${data}% ')
      and a.fecha_creacion between '${fecha_ini}' and '${fecha_fin}'`;
    
-    console.log(query);
     const rta = await this.pool.query(query);
-    console.log(rta.rows.length);
     return rta.rows;
   }
 
@@ -72,9 +67,7 @@ class inv_zones_services {
      where b.nombre ILIKE ('%${data}%') OR c.nombre ILIKE ('%${data}%') OR b.codigo ILIKE ('%${data}%') OR a.id::text ILIKE ('%${data}% ')
      and a.fecha_creacion between '${fecha_ini}' and '${fecha_fin}'`;
    
-    console.log(query);
     const rta = await this.pool.query(query);
-    console.log(rta.rows.length);
     return rta.rows;
   }
 

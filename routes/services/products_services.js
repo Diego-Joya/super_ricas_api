@@ -12,7 +12,6 @@ class Products_services {
   }
 
   async crear(body) {
-    console.log(body);
     const nombre = body.nombre;
     const id_categoria = body.id_categoria;
     const codigo_barras = body.codigo_barras;
@@ -76,7 +75,6 @@ class Products_services {
 
   async concatenar_prod() {
     const query = "SELECT id,  (codigo || '-' || nombre) AS nombre  FROM productos";
-    console.log(query);
     const rta = await this.pool.query(query);
     return rta.rows;
   }
@@ -88,7 +86,6 @@ class Products_services {
     return rta.rows;
   }
   async actualizar(idact, body) {
-    console.log(body);
     let consu = await this.validar(idact);
     if (consu == "") {
       return false;

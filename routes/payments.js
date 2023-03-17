@@ -52,7 +52,6 @@ router.post(
   async (req, res, next) => {
     try {
       const body = req.body;
-      console.log(body);
 
       const data = body;
       const id = body.id_inventario;
@@ -76,7 +75,6 @@ router.post(
   async (req, res, next) => {
     try {
       const body = req.body;
-      console.log(body.pays);
       for (let i = 0; i < body.pays.length; i++) {
         if (typeof body.pays[i].id === "undefined") {
           let data = body.pays[i];

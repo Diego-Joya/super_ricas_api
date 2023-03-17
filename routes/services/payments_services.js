@@ -74,7 +74,6 @@ async actualizar_pago_estado(idact) {
     return rta.rows;
   }
   async consult_pagos_comision(data) {
-    console.log(data);
     const rta = await this.pool
       .query(
         `SELECT SUM(valor) AS valor FROM pago where id_iventario::text = $1 and estado='ACTIVO'`,
@@ -93,7 +92,6 @@ async actualizar_pago_estado(idact) {
     return rta.rows;
   }
   async buscar_invetario(data) {
-    console.log(data);
     const rta = await this.pool
       .query(
         `SELECT * FROM inventario_zonas where  id::text ILIKE ('%${data}%') `

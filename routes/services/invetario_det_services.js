@@ -161,7 +161,6 @@ class Invetario_detalle {
   }
 
   async crear_inv_det(body) {
-    console.log(body);
     const id_producto = body.id_producto;
     const id_zona = body.id_zona;
     const cantidad = body.cantidad;
@@ -215,7 +214,6 @@ class Invetario_detalle {
     const fecha_ini = body.fecha_inicio;
     const fecha_fin = body.fecha_fin;
     const zona = body.id_zona;
-    console.log(fecha_ini);
     let where = ` where 1=1`;
     if (typeof fecha_ini !== "undefined" && fecha_ini != "") {
       where += ` and a.fecha_dia between '${fecha_ini}' and '${fecha_fin}'`;
@@ -223,7 +221,6 @@ class Invetario_detalle {
     if (typeof zona !== "undefined") {
       where += ` and b.id ='${zona}'`;
     }
-    console.log(where);
     const query = `select a.*,(a.total_venta + a.saldo_base
       )as valor_venta,((select sum(precio_total::double precision)  from inventario_zonas_det where  id_inventario=a.id
         )+ a.saldo_base) as precio_total,

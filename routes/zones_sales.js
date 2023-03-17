@@ -13,7 +13,6 @@ router.post(
     async (req, res, next) => {
       try {
         const body = req.body;
-        console.log(body);
         const cat = await invetario.consult_invetario_zonas(body);
         res.json({
           ok: true,

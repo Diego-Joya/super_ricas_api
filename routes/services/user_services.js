@@ -73,11 +73,9 @@ class user_service {
         [data]
       )
       .catch((err) => console.log(err));
-    console.log(rta.rows);
     return rta.rows;
   }
   async consultar_email_user(data) {
-    console.log(data);
     const rta = await this.pool
       .query(
         `SELECT a.id, a.name, a.user_login,a.company,a.id_profile,a.password, a.email,a.photo, a.id as key,b.name as perfil_text FROM users a left join 
@@ -138,7 +136,6 @@ class user_service {
     }
   }
   async actualizar_password(idact, password) {
-    console.log(password);
     const passwordac = await bcrypt.hash(password, 10);
     const token = "";
     let rta = await this.pool
@@ -152,8 +149,6 @@ class user_service {
     return rta;
   }
   async Guardartoken(idact, token) {
-    console.log(token);
-    console.log(idact);
 
     const rta = await this.pool
       .query(
