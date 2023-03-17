@@ -66,13 +66,12 @@ router.get(
 
 router.post(
   "/",
-  // passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
       const body = req.body;
       const dat = {};
       const zona = await zonas.buscar_id(body.zona);
-      console.log(zona);
       dat.cod_factura = body.cod_factura;
       dat.zona = body.zona;
       dat.zona_text = zona[0].nombre;
@@ -87,23 +86,19 @@ router.post(
         body.productos[i].usuario = body.usuario;
         const crear_det = await balance.crear_saldos_det(body.productos[i]);
       }
-
       const bander = "balances";
       let dataFact = await returns.ConsultaInvetario(body.cod_factura, bander);
-      console.log(dataFact);
       let newTotalVenta =
         parseInt(dataFact[0].total_venta) - parseInt(body.valor_venta);
       let newSubIva =
         parseInt(dataFact[0].total_iva) - parseInt(body.valor_iva);
       let newComision =
         parseInt(dataFact[0].total_comision) - parseInt(body.valor_comision);
-
       body.newTotalVenta = newTotalVenta;
       body.newSubIva = newSubIva;
       body.newComision = newComision;
       body.id_saldo = crear[0].id;
       let act_factura = await balance.apply_saldo_fac(body);
-
       res.json({
         ok: true,
         message: "Registros guardados exitosamente",
@@ -122,13 +117,48 @@ router.patch(
     try {
       const { id } = req.params;
       const body = req.body;
+      const Consult_saldo = await balance.validar(id);
+      const valor_total =
+        parseInt(Consult_saldo[0].valor_venta) - parseInt(body.valor_venta);
+      const valor_iva =
+        parseInt(Consult_saldo[0].valor_iva) - parseInt(body.valor_iva);
+      const valor_comision =
+        parseInt(Consult_saldo[0].valor_comision) -
+        parseInt(body.valor_comision);
+
+      const bander = "balances";
+      let dataFact = await returns.ConsultaInvetario(body.cod_factura, bander);
+
+      if (valor_total < 0) {
+        body.newTotalVenta =
+          parseInt(dataFact[0].total_venta) - parseInt(valor_total);
+      } else {
+        body.newTotalVenta =
+          parseInt(dataFact[0].total_venta) + parseInt(valor_total);
+      }
+      if (valor_iva < 0) {
+        body.newSubIva = parseInt(dataFact[0].total_iva) - parseInt(valor_iva);
+      } else {
+        body.newSubIva = parseInt(dataFact[0].total_iva) + parseInt(valor_iva);
+      }
+      if (valor_comision < 0) {
+        body.newComision =
+          parseInt(dataFact[0].total_comision) - parseInt(valor_comision);
+      } else {
+        body.newComision =
+          parseInt(dataFact[0].total_comision) + parseInt(valor_comision);
+      }
+      let act_factura = await balance.apply_saldo_fac(body);
+
       const zona = await zonas.buscar_id(body.zona);
-      console.log(zona);
       let dat = {};
       dat.cod_factura = body.cod_factura;
       dat.zona = body.zona;
       dat.zona_text = zona[0].nombre;
       dat.usuario = body.usuario;
+      dat.valor_venta = body.valor_venta;
+      dat.valor_iva = body.valor_iva;
+      dat.valor_comision = body.valor_comision;
 
       const actualizar = await balance.actualizar(id, dat);
       if (actualizar == false) {
@@ -139,13 +169,11 @@ router.patch(
       }
 
       const existentes = await balance.consult_saldos_det(id);
-      console.log(existentes);
       let detalles = [];
 
       for (let i = 0; i < existentes.length; i++) {
         detalles.push(existentes[i].id);
       }
-      console.log(detalles);
       let contador = 0;
 
       for (let i = 0; i < body.productos.length; i++) {
@@ -154,7 +182,6 @@ router.patch(
         if (typeof body.productos[i].id != "undefined") {
           if (detalles.includes(body.productos[i].id)) {
             contador++;
-            console.log("actualizando");
 
             const actualizar_det = await balance.actualizar_saldos_det(
               body.productos[i].id,
@@ -162,9 +189,7 @@ router.patch(
             );
           }
         } else {
-          console.log("estoy creando");
           const crear_det = await balance.crear_saldos_det(body.productos[i]);
-          console.log(crear_det);
         }
       }
 

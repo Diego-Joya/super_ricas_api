@@ -87,6 +87,9 @@ class balances_services {
     const id_zona = body.zona;
     const zona_text = body.zona_text;
     const codigo = body.cod_factura;
+    const valor_venta = body.valor_venta;
+    const valor_iva = body.valor_iva;
+    const valor_comision = body.valor_comision;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
     const estado = "PENDIENTE";
 
@@ -97,8 +100,20 @@ class balances_services {
     const rta = await this.pool
       .query(
         `UPDATE public.saldos
-    SET  fecha=$1, usuario=$2, zona=$3, zona_text=$4, numero_factura=$5, estado=$6 WHERE id=$7 `,
-        [fecha_hora, usuario, id_zona, zona_text, codigo, estado, idact]
+    SET  fecha=$1, usuario=$2, zona=$3, zona_text=$4, numero_factura=$5, estado=$6, 
+    valor_venta=$7, valor_iva=$8, valor_comision=$9 WHERE id=$10 `,
+        [
+          fecha_hora,
+          usuario,
+          id_zona,
+          zona_text,
+          codigo,
+          estado,
+          valor_venta,
+          valor_iva,
+          valor_comision,
+          idact,
+        ]
       )
       .catch((err) => console.log(err));
     return rta;
@@ -112,12 +127,22 @@ class balances_services {
     const producto_text = body.producto_text;
     const cantidad = body.cantidad;
     const id_saldo = body.id_encabezado;
+    const codigo_producto = body.codigo_producto;
+    const precio_unidad = body.precio_unidad;
+    const precio_total = body.precio_total;
+    const iva = body.iva;
+    const porcen_comision = body.porcen_comision;
+    const valor_iva = body.valor_iva;
+    const valor_comision = body.valor_comision;
+    const valor_venta = body.valor_venta;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
     const rta = await this.pool
       .query(
         `UPDATE public.saldos_det
-    SET  fecha=$1, usuario=$2, id_producto=$3, producto_text=$4, cantidad=$5, id_saldo=$6 WHERE id=$7 `,
+    SET  fecha=$1, usuario=$2, id_producto=$3, producto_text=$4, cantidad=$5, id_saldo=$6,
+    codigo_producto=$7, precio_unidad=$8, precio_total=$9, iva=$10, porcen_comision=$11,
+     valor_iva=$12, valor_comision=$13, valor_venta=$14 WHERE id=$15 `,
         [
           fecha_hora,
           usuario,
@@ -125,6 +150,14 @@ class balances_services {
           producto_text,
           cantidad,
           id_saldo,
+          codigo_producto,
+          precio_unidad,
+          precio_total,
+          iva,
+          porcen_comision,
+          valor_iva,
+          valor_comision,
+          valor_venta,
           idact,
         ]
       )
@@ -135,7 +168,6 @@ class balances_services {
 
   async delete_saldos_det_uno(id_delete) {
     let consu = await this.validar_saldo_det(id_delete);
-    console.log("jajajja");
     if (consu == "") {
       return false;
     }
@@ -246,6 +278,8 @@ class balances_services {
   }
 
   async apply_saldo_fac(body) {
+    console.log('hola');
+    console.log(body);
     const newComision = body.newComision;
     const newTotalVenta = body.newTotalVenta;
     const newSubIva = body.newSubIva;

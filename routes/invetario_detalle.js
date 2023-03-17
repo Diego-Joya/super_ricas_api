@@ -1,6 +1,8 @@
 const expres = require("express");
 // const { check } = require("express-validator");
 const Invetario_detalle = require("./services/invetario_det_services");
+const returns_service = require("./services/returns_services");
+
 // const boom = require("@hapi/boom");
 const passport = require("passport");
 
@@ -13,6 +15,7 @@ const {
 const validatorHandler = require("./../middlewares/validator_handler");
 const router = expres.Router();
 const invetario = new Invetario_detalle();
+const returns = new returns_service();
 
 // CONSULTA MERCANCIA ZONAS
 router.post(
@@ -92,7 +95,6 @@ router.post(
   async (req, res, next) => {
     try {
       const body = req.body;
-      console.log(body);
       const dta = {};
       dta.fecha_dia = body.fecha_dia;
       dta.id_zona = body.id_zona;
@@ -104,28 +106,38 @@ router.post(
       dta.total_iva = body.total_iva;
       dta.total_venta = body.total_venta;
 
-      const crear = await invetario.crear_inv_zona(dta);
-      const consulta = await invetario.consult_invetario_zonas_id(crear[0].id);
-      crear[0].zona_text = consulta[0].zona_text;
+      const bandera = "balances";
+      let dataFact = await returns.ConsultaInvetario(body.codigo, bandera);
+      if (dataFact.length > 0) {
+        res.json({
+          ok: false,
+          message: "El codigo de factura ya existe... Verifique por favor!",
+        });
+      } else {
+        const crear = await invetario.crear_inv_zona(dta);
+        const consulta = await invetario.consult_invetario_zonas_id(
+          crear[0].id
+        );
+        crear[0].zona_text = consulta[0].zona_text;
 
-      const registro = [];
-      const detalle = [];
-      registro.push(crear[0]);
-      console.log(registro);
-      for (let i = 0; i < body.detalles.length; i++) {
-        body.detalles[i].id_invetario = crear[0].id;
-        body.detalles[i].id_zona = body.id_zona;
-        body.detalles[i].usuario = body.usuario;
-        const crear_det = await invetario.crear_inv_det(body.detalles[i]);
-        detalle.push(crear_det[0]);
+        const registro = [];
+        const detalle = [];
+        registro.push(crear[0]);
+        for (let i = 0; i < body.detalles.length; i++) {
+          body.detalles[i].id_invetario = crear[0].id;
+          body.detalles[i].id_zona = body.id_zona;
+          body.detalles[i].usuario = body.usuario;
+          const crear_det = await invetario.crear_inv_det(body.detalles[i]);
+          detalle.push(crear_det[0]);
+        }
+        registro.push(detalle);
+
+        res.json({
+          ok: true,
+          message: "Registros creados exitosamente!",
+          data: crear,
+        });
       }
-      registro.push(detalle);
-
-      res.json({
-        ok: true,
-        message: "Registros creados exitosamente!",
-        data: crear,
-      });
     } catch (error) {
       next(error);
     }
@@ -140,7 +152,6 @@ router.post(
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      console.log(id);
       const body = req.body;
       const consulta = await invetario.consult_invetario_zonas_id(id);
       if (consulta == "") {
@@ -193,17 +204,14 @@ router.patch(
       const actualizar = await invetario.actualizar(id, dta);
 
       const existentes = await invetario.consult_invetario_zonas_det(id);
-      console.log(existentes);
       let detalles = [];
 
       for (let i = 0; i < existentes.length; i++) {
         detalles.push(existentes[i].id);
       }
-      console.log(detalles);
       let contador = 0;
 
       for (let i = 0; i < body.detalles.length; i++) {
-        console.log(body.detalles[i].id);
         body.detalles[i].usuario = body.usuario;
         body.detalles[i].id_zona = body.id_zona;
         body.detalles[i].id_invetario = id;
@@ -218,7 +226,6 @@ router.patch(
           }
         } else {
           const crear_det = await invetario.crear_inv_det(body.detalles[i]);
-          console.log(crear_det);
         }
       }
 
