@@ -161,6 +161,7 @@ class Invetario_detalle {
   }
 
   async crear_inv_det(body) {
+    console.log('holaaaaaaaaaaa');
     const id_producto = body.id_producto;
     const id_zona = body.id_zona;
     const cantidad = body.cantidad;

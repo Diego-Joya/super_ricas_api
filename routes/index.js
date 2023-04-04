@@ -11,6 +11,7 @@ const payments = require('./payments');
 const returns = require('./returns');
 const sales = require('./zones_sales');
 const balance = require('./balances');
+const menu = require('./menu');
 
 
 
@@ -28,6 +29,7 @@ function routerApi(app) {
   app.use("/api/returns", returns); 
   app.use("/api/sale", sales); 
   app.use("/api/balances", balance); 
+  app.use("/api/menu", menu); 
 
 
 }
