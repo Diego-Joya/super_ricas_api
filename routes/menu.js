@@ -39,7 +39,6 @@ router.post(
             "El codigo de factura ya existe en la bd... ¡Verifique e intente de nuevo!",
         });
       }
-      console.log("jajajj");
       let id;
 
       if (body.id !== undefined) {
@@ -49,7 +48,7 @@ router.post(
         const crear = await invetario.crear_inv_zona(dta);
         id = crear[0].id;
       }
-      console.log('id inventario es', id);
+      console.log("id inventario es", id);
 
       if (body.productos != undefined) {
         for (let i = 0; i < body.productos.length; i++) {
@@ -70,8 +69,16 @@ router.post(
         for (let i = 0; i < body.devoluciones.length; i++) {
           body.devoluciones[i].usuario = body.usuario;
           body.devoluciones[i].id_zona = body.id_zona;
-          console.log(body.productos[i]);
-          const crear = await returns.crear(body.devoluciones[i]);
+          body.devoluciones[i].zona_text = body.zona_text;
+          console.log(body.devoluciones[i]);
+          if (body.devoluciones[i].id !== undefined) {
+            const actualizar = await returns.actualizar(
+              body.devoluciones[i].id,
+              body.devoluciones[i]
+            );
+          } else {
+            const crear = await returns.crear(body.devoluciones[i]);
+          }
         }
       } else if (body.pays != undefined) {
         for (let i = 0; i < body.pays.length; i++) {
