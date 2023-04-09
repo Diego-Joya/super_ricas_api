@@ -71,7 +71,6 @@ router.post(
           body.devoluciones[i].usuario = body.usuario;
           body.devoluciones[i].id_zona = body.id_zona;
           body.devoluciones[i].zona_text = body.zona_text;
-          body.devoluciones[i].zona_text = body.zona_text;
           console.log(body.devoluciones[i]);
           if (body.devoluciones[i].id !== undefined) {
             const actualizar = await returns.actualizar(
@@ -99,7 +98,7 @@ router.post(
         let valor_iva = 0;
         let valor_venta = 0;
         let valor_comision = 0;
-        for (let i = 0; i < body.pays.length; i++) {
+        for (let i = 0; i < body.saldos.length; i++) {
           valor_iva += body.saldos[i].valor_iva;
           valor_venta += body.saldos[i].valor_venta;
           valor_comision += body.saldos[i].valor_comision;
@@ -107,7 +106,7 @@ router.post(
           body.saldos[i].id_zona = body.id_zona;
           body.saldos[i].id_encabezado = id;
 
-          if (typeof body.pays[i].id === "undefined") {
+          if (typeof body.saldos[i].id === "undefined") {
             let data = body.pays[i];
             const crear_det = await balance.crear_saldos_det(body.saldos[i]);
           } else {
@@ -122,7 +121,7 @@ router.post(
       res.json({
         ok: true,
         message: "Datos guardados correctamente!",
-        data: "data",
+        data: id,
       });
     } catch (error) {
       next(error);
