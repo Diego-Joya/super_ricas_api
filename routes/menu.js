@@ -6,7 +6,6 @@ const returns_service = require("./services/returns_services");
 const payments_service = require("./services/payments_services");
 const balances = require("./services/balances_services");
 
-
 const router = expres.Router();
 const invetario = new Invetario_detalle();
 const returns = new returns_service();
@@ -31,22 +30,22 @@ router.post(
       dta.total_iva = body.valor_iva;
       dta.total_venta = body.valor_venta;
 
-      const bandera = "balances";
-      let dataFact = await returns.ConsultaInvetario(body.codigo, bandera);
-      console.log(dataFact);
-      if (dataFact.length > 0) {
-        res.json({
-          ok: false,
-          messege:
-            "El codigo de factura ya existe en la bd... ¡Verifique e intente de nuevo!",
-        });
-      }
       let id;
 
       if (body.id !== undefined) {
         id = body.id;
         const actualizar = await invetario.actualizar(body.id, dta);
       } else {
+        const bandera = "balances";
+        let dataFact = await returns.ConsultaInvetario(body.codigo, bandera);
+        console.log(dataFact);
+        if (dataFact.length > 0) {
+          res.json({
+            ok: false,
+            message:
+              "El codigo de factura ya existe en la bd... ¡Verifique e intente de nuevo!",
+          });
+        }
         const crear = await invetario.crear_inv_zona(dta);
         id = crear[0].id;
       }
@@ -95,20 +94,19 @@ router.post(
           }
         }
       } else if (body.saldos != undefined) {
-
         const Consult_saldo = await balance.validar(id);
 
         let valor_iva = 0;
         let valor_venta = 0;
         let valor_comision = 0;
         for (let i = 0; i < body.pays.length; i++) {
-          valor_iva+= body.saldos[i].valor_iva; 
-          valor_venta+= body.saldos[i].valor_venta; 
-          valor_comision+= body.saldos[i].valor_comision; 
+          valor_iva += body.saldos[i].valor_iva;
+          valor_venta += body.saldos[i].valor_venta;
+          valor_comision += body.saldos[i].valor_comision;
           body.saldos[i].usuario = body.usuario;
           body.saldos[i].id_zona = body.id_zona;
           body.saldos[i].id_encabezado = id;
-          
+
           if (typeof body.pays[i].id === "undefined") {
             let data = body.pays[i];
             const crear_det = await balance.crear_saldos_det(body.saldos[i]);
@@ -119,8 +117,6 @@ router.post(
           }
         }
         const crear = await balance.crear(dat);
-
-
       }
 
       res.json({
