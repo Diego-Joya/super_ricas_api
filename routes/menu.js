@@ -32,7 +32,7 @@ router.post(
 
       let id;
 
-      if (body.id !== undefined) {
+      if (body.id !== undefined || body.id !=="") {
         id = body.id;
         const actualizar = await invetario.actualizar(body.id, dta);
       } else {
@@ -94,7 +94,7 @@ router.post(
         }
       } else if (body.saldos != undefined) {
         const Consult_saldo = await balance.validar(id);
-
+        console.log(Consult_saldo);
         let valor_iva = 0;
         let valor_venta = 0;
         let valor_comision = 0;
@@ -106,16 +106,19 @@ router.post(
           body.saldos[i].id_zona = body.id_zona;
           body.saldos[i].id_encabezado = id;
 
-          if (typeof body.saldos[i].id === "undefined") {
-            let data = body.pays[i];
-            const crear_det = await balance.crear_saldos_det(body.saldos[i]);
-          } else {
-            let id = body.pays[i].id;
-            let data = body.pays[i];
-            const actualizar = await payments.actualizar(id, data);
-          }
+          // if (typeof body.saldos[i].id === "undefined") {
+          //   let data = body.pays[i];
+          //   const crear_det = await balance.crear_saldos_det(body.saldos[i]);
+          // } else {
+          //   let id = body.pays[i].id;
+          //   let data = body.pays[i];
+          //   const actualizar = await payments.actualizar(id, data);
+          // }
         }
-        const crear = await balance.crear(dat);
+        console.log(valor_comision);
+        console.log(valor_iva);
+        console.log(valor_venta);
+        // const crear = await balance.crear(dat);
       }
 
       res.json({
