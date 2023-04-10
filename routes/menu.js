@@ -4,12 +4,14 @@ const passport = require("passport");
 const Invetario_detalle = require("./services/invetario_det_services");
 const returns_service = require("./services/returns_services");
 const payments_service = require("./services/payments_services");
+const balances = require("./services/balances_services");
+
 
 const router = expres.Router();
 const invetario = new Invetario_detalle();
 const returns = new returns_service();
 const payments = new payments_service();
-
+const balance = new balances();
 router.post(
   "/",
   // passport.authenticate("jwt", { session: false }),
@@ -25,9 +27,9 @@ router.post(
       dta.saldo_base = body.saldo_base;
       dta.zona_text = body.zona_text;
       dta.codigo = body.codigo;
-      dta.total_comision = body.total_comision;
+      dta.total_comision = body.valor_comision;
       dta.total_iva = body.total_iva;
-      dta.total_venta = body.total_venta;
+      dta.total_venta = body.valor_venta;
 
       const bandera = "balances";
       let dataFact = await returns.ConsultaInvetario(body.codigo, bandera);
@@ -70,6 +72,7 @@ router.post(
           body.devoluciones[i].usuario = body.usuario;
           body.devoluciones[i].id_zona = body.id_zona;
           body.devoluciones[i].zona_text = body.zona_text;
+          body.devoluciones[i].zona_text = body.zona_text;
           console.log(body.devoluciones[i]);
           if (body.devoluciones[i].id !== undefined) {
             const actualizar = await returns.actualizar(
@@ -80,17 +83,44 @@ router.post(
             const crear = await returns.crear(body.devoluciones[i]);
           }
         }
-      } else if (body.pays != undefined) {
+      } else if (body.ingresos != undefined) {
+        for (let i = 0; i < body.ingresos.length; i++) {
+          if (typeof body.ingresos[i].id === "undefined") {
+            let data = body.ingresos[i];
+            const crear = await payments.crear(data);
+          } else {
+            let id = body.ingresos[i].id;
+            let data = body.ingresos[i];
+            const actualizar = await payments.actualizar(id, data);
+          }
+        }
+      } else if (body.saldos != undefined) {
+
+        const Consult_saldo = await balance.validar(id);
+
+        let valor_iva = 0;
+        let valor_venta = 0;
+        let valor_comision = 0;
         for (let i = 0; i < body.pays.length; i++) {
+          valor_iva+= body.saldos[i].valor_iva; 
+          valor_venta+= body.saldos[i].valor_venta; 
+          valor_comision+= body.saldos[i].valor_comision; 
+          body.saldos[i].usuario = body.usuario;
+          body.saldos[i].id_zona = body.id_zona;
+          body.saldos[i].id_encabezado = id;
+          
           if (typeof body.pays[i].id === "undefined") {
             let data = body.pays[i];
-            const crear = await payments.crear(data);
+            const crear_det = await balance.crear_saldos_det(body.saldos[i]);
           } else {
             let id = body.pays[i].id;
             let data = body.pays[i];
             const actualizar = await payments.actualizar(id, data);
           }
         }
+        const crear = await balance.crear(dat);
+
+
       }
 
       res.json({
