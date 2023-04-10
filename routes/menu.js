@@ -28,7 +28,7 @@ router.post(
       dta.zona_text = body.zona_text;
       dta.codigo = body.codigo;
       dta.total_comision = body.valor_comision;
-      dta.total_iva = body.total_iva;
+      dta.total_iva = body.valor_iva;
       dta.total_venta = body.valor_venta;
 
       const bandera = "balances";
