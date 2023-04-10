@@ -32,7 +32,7 @@ router.post(
 
       let id;
 
-      if (body.id !== undefined || body.id !=="") {
+      if (body.id !== undefined && body.id != "") {
         id = body.id;
         const actualizar = await invetario.actualizar(body.id, dta);
       } else {
@@ -45,12 +45,15 @@ router.post(
             message:
               "El codigo de factura ya existe en la bd... ¡Verifique e intente de nuevo!",
           });
+          return;
         }
+
+        console.log("ingresa");
         const crear = await invetario.crear_inv_zona(dta);
+        console.log(crear);
         id = crear[0].id;
       }
       console.log("id inventario es", id);
-
       if (body.productos != undefined) {
         for (let i = 0; i < body.productos.length; i++) {
           body.productos[i].usuario = body.usuario;

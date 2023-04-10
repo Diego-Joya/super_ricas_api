@@ -65,6 +65,7 @@ class Invetario_detalle {
   }
 
   async crear_inv_zona(body) {
+    console.log("el cuerpo es", body);
     const fecha = body.fecha_dia;
     const id_zona = body.id_zona;
     const zona_text = body.zona_text;
@@ -161,7 +162,6 @@ class Invetario_detalle {
   }
 
   async crear_inv_det(body) {
-    console.log('holaaaaaaaaaaa');
     const id_producto = body.id_producto;
     const id_zona = body.id_zona;
     const cantidad = body.cantidad;
@@ -206,7 +206,6 @@ class Invetario_detalle {
         nomb_producto,
       ])
       .catch((err) => console.log(err));
-
     return rta.rows;
   }
 
@@ -245,7 +244,6 @@ class Invetario_detalle {
     ${where} order by id desc`;
 
     const rta = await this.pool.query(query);
-    console.log(rta.rows.length);
     return rta.rows;
   }
 
