@@ -47,8 +47,10 @@ class returns_service {
   }
 
   async ConsultaInvetario(data, bandera) {
+    console.log(data);
+    console.log(bandera);
      let where = ` where 1=1`;
-    if (typeof bandera !== "undefined" && bandera == "balances") {
+    if (bandera == "balances") {
       where += ` and  codigo='${data}'`;
     }else{
       where += ` and id=${data}`;

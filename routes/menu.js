@@ -86,13 +86,13 @@ router.post(
         }
       } else if (body.ingresos != undefined) {
         for (let i = 0; i < body.ingresos.length; i++) {
-          if (typeof body.ingresos[i].id === "undefined") {
-            let data = body.ingresos[i];
-            const crear = await payments.crear(data);
-          } else {
+          if (body.ingresos[i].id != "undefined" && body.ingresos[i].id != "") {
             let id = body.ingresos[i].id;
             let data = body.ingresos[i];
             const actualizar = await payments.actualizar(id, data);
+          } else {
+            let data = body.ingresos[i];
+            const crear = await payments.crear(data);
           }
         }
       } else if (body.saldos != undefined) {
@@ -102,9 +102,9 @@ router.post(
         let valor_venta = 0;
         let valor_comision = 0;
         for (let i = 0; i < body.saldos.length; i++) {
-          valor_iva += body.saldos[i].valor_iva;
-          valor_venta += body.saldos[i].valor_venta;
-          valor_comision += body.saldos[i].valor_comision;
+          valor_iva += parseInt(body.saldos[i].valor_iva);
+          valor_venta += parseInt(body.saldos[i].valor_venta);
+          valor_comision += parseInt(body.saldos[i].valor_comision);
           body.saldos[i].usuario = body.usuario;
           body.saldos[i].id_zona = body.id_zona;
           body.saldos[i].id_encabezado = id;
