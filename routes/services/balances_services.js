@@ -224,6 +224,13 @@ class balances_services {
       .catch((err) => console.log(err));
     return rta.rows;
   }
+  // CONSULTA SALDOS NUMERO FACTURA
+  async validar_factura(data) {
+    const rta = await this.pool
+      .query(`SELECT *, id as key FROM saldos where numero_factura='${data}'`)
+      .catch((err) => console.log(err));
+    return rta.rows;
+  }
   //CONSULTA INVENTARIO POR CODIGO FACTURA
   async consult_invetario_cod(data) {
     const rta = await this.pool
