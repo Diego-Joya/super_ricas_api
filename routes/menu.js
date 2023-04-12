@@ -82,6 +82,12 @@ router.post(
             const crear = await returns.crear(body.devoluciones[i]);
           }
         }
+        res.json({
+          ok: true,
+          message: "Datos guardados correctamente!",
+          data: id,
+        });
+        return;
       } else if (body.ingresos != undefined) {
         for (let i = 0; i < body.ingresos.length; i++) {
           if (body.ingresos[i].id != "undefined" && body.ingresos[i].id != "") {
@@ -93,6 +99,12 @@ router.post(
             const crear = await payments.crear(data);
           }
         }
+        res.json({
+          ok: true,
+          message: "Datos guardados correctamente!",
+          data: id,
+        });
+        return;
       } else if (body.saldos != undefined) {
         const Consult_saldo = await balance.validar_factura(body.codigo);
         console.log("saldo....", Consult_saldo);
@@ -151,6 +163,12 @@ router.post(
           const actualizar = await balance.actualizar(id, dat);
         }
         // const crear = await balance.crear(dat);
+        res.json({
+          ok: false,
+          message: "Se produjo un error al guardar!",
+          data: id,
+        });
+        return;
       }
 
       res.json({
