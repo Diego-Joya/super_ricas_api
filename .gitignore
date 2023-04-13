@@ -125,10 +125,10 @@ módulos_web/
 .integridad del hilo
 
 #archivos de variables de entorno dotenv
-.env
-.env.desarrollo.local
-.env.test.local.env.producción.local
-.env.local
+# .env
+# .env.desarrollo.local
+# .env.test.local.env.producción.local
+# .env.local
 
 # caché del empaquetador de paquetes (https://parceljs.org/)
 .cache

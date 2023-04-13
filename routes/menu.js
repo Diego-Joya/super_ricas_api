@@ -165,7 +165,7 @@ router.post(
         // const crear = await balance.crear(dat);
         res.json({
           ok: false,
-          message: "Se produjo un error al guardar!",
+          message: "Datos guardados correctamente!",
           data: id,
         });
         return;
@@ -173,7 +173,7 @@ router.post(
 
       res.json({
         ok: true,
-        message: "Datos guardados correctamente!",
+        message: "Se produjo un error al guardar!",
         data: id,
       });
     } catch (error) {
