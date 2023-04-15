@@ -13,7 +13,11 @@ const http = require("http");
 const https = require("https");
 
 const app = express();
-app.use(cors());
+
+app.use(cors({
+  origin: '*'
+}));
+
 require("./utils/auth");
 
 // app.get('/nueva-ruta', checkApiKey,(req, res)=>{
