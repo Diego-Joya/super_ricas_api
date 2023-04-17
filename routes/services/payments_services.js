@@ -9,6 +9,8 @@ class payments_service {
   }
 
   async crear(body) {
+    console.log('hola guapo');
+    console.log(body);
     const usuario = body.usuario;
     const id_iventario = body.id_iventario;
     const id_zona = body.id_zona;

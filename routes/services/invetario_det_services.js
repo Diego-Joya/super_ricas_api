@@ -237,9 +237,14 @@ class Invetario_detalle {
        ((select sum(valor::double precision) from pago where id_iventario=a.id and concepto='DESCUENTO')) end as valor_descuento,
        (select sum(valor_iva::double precision)  from inventario_zonas_det where  id_inventario=a.id
         )as valor_iva,(select sum(valor::double precision)  from pago where  id_iventario=a.id and concepto='INGRESO'
-        )as valor_ingresos,((select sum(valor_venta::double precision)  from inventario_zonas_det where  id_inventario=a.id) -
+        )as valor_ingresos,
+		case
+		when ((select sum(valor_venta::double precision)  from inventario_zonas_det where  id_inventario=a.id) -
                 (select sum(valor::double precision)  from pago where  id_iventario=a.id and concepto <>'FIADO'
-        ))as valor_pendiente,a.fecha_dia::text as fecha_dia, a.id as key, b.nombre as zona_text,(select sum(valor::double precision)  from pago where  id_iventario=a.id and concepto='FIADO'
+        )) is null then
+		(select sum(valor_venta::double precision)  from inventario_zonas_det where  id_inventario=a.id
+        ) end as valor_pendiente,
+		a.fecha_dia::text as fecha_dia, a.id as key, b.nombre as zona_text,(select sum(valor::double precision)  from pago where  id_iventario=a.id and concepto='FIADO'
         )as valor_fiado from inventario_zonas a LEFT join zonas b on (a.id_zona=b.id)
     ${where} order by id desc`;
 

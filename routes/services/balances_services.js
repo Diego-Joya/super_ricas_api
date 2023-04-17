@@ -227,7 +227,7 @@ class balances_services {
   // CONSULTA SALDOS NUMERO FACTURA
   async validar_factura(data) {
     const rta = await this.pool
-      .query(`SELECT *, id as key FROM saldos where numero_factura='${data}'`)
+      .query(`select * from saldos a left join saldos_det b on (a.id=id_saldo) where a.numero_factura='${data}'`)
       .catch((err) => console.log(err));
     return rta.rows;
   }
@@ -280,7 +280,7 @@ class balances_services {
   }
 
   async apply_saldo_fac(body) {
-    console.log('hola');
+    console.log('aplicando saldos ... ');
     console.log(body);
     const newComision = body.newComision;
     const newTotalVenta = body.newTotalVenta;

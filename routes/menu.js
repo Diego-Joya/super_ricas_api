@@ -90,6 +90,7 @@ router.post(
         return;
       } else if (body.ingresos != undefined) {
         for (let i = 0; i < body.ingresos.length; i++) {
+          console.log(' aca voy');
           if (body.ingresos[i].id != "undefined" && body.ingresos[i].id != "") {
             let id = body.ingresos[i].id;
             let data = body.ingresos[i];
@@ -112,6 +113,23 @@ router.post(
         let valor_iva = 0;
         let valor_venta = 0;
         let valor_comision = 0;
+        let id_saldo = 0;
+        if (Consult_saldo.length == 0) {
+          let valor = [];
+          valor.cod_factura = body.codigo;
+          valor.zona = body.zona;
+          valor.zona_text = body.zona_text;
+          valor.usuario = body.usuario;
+          valor.valor_venta = valor_venta;
+          valor.valor_iva = valor_iva;
+          valor.valor_comision = valor_comision;
+          const crear_saldo = await balance.crear(valor);
+          id_saldo = crear_saldo[0].id;
+        } else {
+          id_saldo=Consult_saldo[0].id
+          const actualizar = await balance.actualizar(id, body);
+        }
+
         for (let i = 0; i < body.saldos.length; i++) {
           valor_iva += parseInt(body.saldos[i].valor_iva);
           valor_venta += parseInt(body.saldos[i].valor_venta);
@@ -129,9 +147,9 @@ router.post(
           }
         }
 
-        console.log(valor_comision);
-        console.log(valor_iva);
-        console.log(valor_venta);
+        // console.log(valor_comision);
+        // console.log(valor_iva);
+        // console.log(valor_venta);
         if (Consult_saldo.length == 0) {
           let valor = [];
           valor.cod_factura = body.codigo;
@@ -160,7 +178,8 @@ router.post(
           const new_valor_comision =
             parseInt(body.valor_comision) - parseInt(valor_comision);
 
-          const actualizar = await balance.actualizar(id, dat);
+          const actualizar = await balance.actualizar(id, body);
+          let act_factura = await balance.apply_saldo_fac(body);
         }
         // const crear = await balance.crear(dat);
         res.json({
