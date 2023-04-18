@@ -90,12 +90,15 @@ router.post(
         return;
       } else if (body.ingresos != undefined) {
         for (let i = 0; i < body.ingresos.length; i++) {
-          console.log(' aca voy');
-          if (body.ingresos[i].id != "undefined" && body.ingresos[i].id != "") {
+          console.log(body.ingresos[i].id);
+          if (body.ingresos[i].id != undefined && body.ingresos[i].id != "") {
+            console.log(body);
+            console.log('mucha gueva');
             let id = body.ingresos[i].id;
             let data = body.ingresos[i];
             const actualizar = await payments.actualizar(id, data);
           } else {
+            console.log('creando');
             let data = body.ingresos[i];
             const crear = await payments.crear(data);
           }
