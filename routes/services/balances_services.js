@@ -231,6 +231,13 @@ class balances_services {
       .catch((err) => console.log(err));
     return rta.rows;
   }
+  // CONSULTA SECUENCIA ID SALDOS
+  async secuencia_id_saldos() {
+    const rta = await this.pool
+      .query(`select nextval('saldos_id_seq')`)
+      .catch((err) => console.log(err));
+    return rta.rows;
+  }
   //CONSULTA INVENTARIO POR CODIGO FACTURA
   async consult_invetario_cod(data) {
     const rta = await this.pool
