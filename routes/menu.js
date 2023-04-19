@@ -38,7 +38,7 @@ router.post(
         const bandera = "balances";
         let dataFact = await returns.ConsultaInvetario(body.codigo, bandera);
         console.log(dataFact);
-        if (dataFact.length > 0) {
+        if (dataFact.length > 0 && body.saldos == undefined) {
           res.json({
             ok: false,
             message:
@@ -47,7 +47,6 @@ router.post(
           return;
         }
 
-        console.log("ingresa");
         const crear = await invetario.crear_inv_zona(dta);
         id = crear[0].id;
       }
@@ -93,12 +92,12 @@ router.post(
           console.log(body.ingresos[i].id);
           if (body.ingresos[i].id != undefined && body.ingresos[i].id != "") {
             console.log(body);
-            console.log('mucha gueva');
+            console.log("mucha gueva");
             let id = body.ingresos[i].id;
             let data = body.ingresos[i];
             const actualizar = await payments.actualizar(id, data);
           } else {
-            console.log('creando');
+            console.log("creando");
             let data = body.ingresos[i];
             const crear = await payments.crear(data);
           }
@@ -111,7 +110,8 @@ router.post(
         return;
       } else if (body.saldos != undefined) {
         const Consult_saldo = await balance.validar_factura(body.codigo);
-        console.log("saldo....", Consult_saldo);
+        console.log('consultas saldos anteriores');
+        console.log(Consult_saldo);
         console.log(Consult_saldo.length == 0);
         let valor_iva = 0;
         let valor_venta = 0;
@@ -129,10 +129,11 @@ router.post(
           const crear_saldo = await balance.crear(valor);
           id_saldo = crear_saldo[0].id;
         } else {
-          id_saldo=Consult_saldo[0].id
+          id_saldo = Consult_saldo[0].id;
           const actualizar = await balance.actualizar(id, body);
         }
-
+        console.log('saldos...');
+        console.log(body.saldos);
         for (let i = 0; i < body.saldos.length; i++) {
           valor_iva += parseInt(body.saldos[i].valor_iva);
           valor_venta += parseInt(body.saldos[i].valor_venta);
@@ -141,12 +142,12 @@ router.post(
           body.saldos[i].id_zona = body.id_zona;
           body.saldos[i].id_encabezado = id;
 
-          if (typeof body.saldos[i].id === "undefined") {
+          if (typeof body.saldos[i].id == undefined) {
             const crear_det = await balance.crear_saldos_det(body.saldos[i]);
           } else {
             let id = body.saldos[i].id;
             let data = body.saldos[i];
-            const actualizar = await payments.actualizar_saldos_det(id, data);
+            const actualizar = await balance.actualizar_saldos_det(id, data);
           }
         }
 
