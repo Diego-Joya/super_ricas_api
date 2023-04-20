@@ -94,6 +94,8 @@ router.post(
       } else if (body.ingresos != undefined) {
         for (let i = 0; i < body.ingresos.length; i++) {
           console.log(body.ingresos[i].id);
+          body.ingresos[i].id_iventario=body.id;
+          body.ingresos[i].id_zona=body.id_zona
           if (body.ingresos[i].id != undefined && body.ingresos[i].id != "") {
             let id = body.ingresos[i].id;
             let data = body.ingresos[i];
@@ -117,7 +119,7 @@ router.post(
 if(Consult_saldo.length == 0){
   const id_secun_saldo= await balance.secuencia_id_saldos();
   console.log('seciencia id saldos');
-  console.log(id_secun_saldo[0][nextval]);
+  console.log(id_secun_saldo[0].nextval);
   return;
 }
         

@@ -100,6 +100,7 @@ async actualizar_pago_estado(idact) {
     return rta.rows;
   }
   async actualizar(idact, body) {
+    console.log('actualizando ingresos');
     const usuario = body.usuario;
     const id_iventario = body.id_iventario;
     const id_zona = body.id_zona;
