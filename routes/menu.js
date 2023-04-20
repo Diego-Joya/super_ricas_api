@@ -252,7 +252,7 @@ router.post(
 
         // const crear = await balance.crear(dat);
         res.json({
-          ok: false,
+          ok: true,
           message: "Datos guardados correctamente!",
           data: id,
         });
