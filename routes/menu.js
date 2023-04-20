@@ -94,8 +94,8 @@ router.post(
       } else if (body.ingresos != undefined) {
         for (let i = 0; i < body.ingresos.length; i++) {
           console.log(body.ingresos[i].id);
-          body.ingresos[i].id_iventario=body.id;
-          body.ingresos[i].id_zona=body.id_zona
+          body.ingresos[i].id_iventario = body.id;
+          body.ingresos[i].id_zona = body.id_zona;
           if (body.ingresos[i].id != undefined && body.ingresos[i].id != "") {
             let id = body.ingresos[i].id;
             let data = body.ingresos[i];
@@ -116,55 +116,18 @@ router.post(
         console.log("consultas saldos anteriores");
         console.log(Consult_saldo);
         console.log(Consult_saldo.length == 0);
-if(Consult_saldo.length == 0){
-  const id_secun_saldo= await balance.secuencia_id_saldos();
-  console.log('seciencia id saldos');
-  console.log(id_secun_saldo[0].nextval);
-  return;
-}
-        
+        let id_secun_saldo = 0;
         let valor_iva = 0;
         let valor_venta = 0;
         let valor_comision = 0;
         let id_saldo = 0;
-
-        // if (Consult_saldo.length == 0) {
-        //   let valor = [];
-        //   valor.cod_factura = body.codigo;
-        //   valor.zona = body.zona;
-        //   valor.zona_text = body.zona_text;
-        //   valor.usuario = body.usuario;
-        //   valor.valor_venta = valor_venta;
-        //   valor.valor_iva = valor_iva;
-        //   valor.valor_comision = valor_comision;
-        //   const crear_saldo = await balance.crear(valor);
-        //   id_saldo = crear_saldo[0].id;
-        // } else {
-        //   id_saldo = Consult_saldo[0].id;
-        //   const actualizar = await balance.actualizar(id, body);
-        // }
-       
-        console.log("saldos...");
-        console.log(body.saldos);
-        for (let i = 0; i < body.saldos.length; i++) {
-          valor_iva += parseInt(body.saldos[i].valor_iva);
-          valor_venta += parseInt(body.saldos[i].valor_venta);
-          valor_comision += parseInt(body.saldos[i].valor_comision);
-          body.saldos[i].usuario = body.usuario;
-          body.saldos[i].id_zona = body.id_zona;
-          body.saldos[i].id_encabezado = id;
-
-          if (body.saldos[i].id == undefined) {
-            console.log("crea");
-            const crear_det = await balance.crear_saldos_det(body.saldos[i]);
-          } else {
-            console.log("actualiza");
-            let id = body.saldos[i].id;
-            let data = body.saldos[i];
-            const actualizar = await balance.actualizar_saldos_det(id, data);
-          }
-        }
         if (Consult_saldo.length == 0) {
+          // let id_secun = await balance.secuencia_id_saldos();
+          // console.log(id_secun);
+          // id_secun_saldo = id_secun[0].id + 1;
+          // console.log("seciencia id saldos");
+          // console.log(id_secun_saldo);
+
           let valor = [];
           valor.cod_factura = body.codigo;
           valor.zona = body.zona;
@@ -183,20 +146,105 @@ if(Consult_saldo.length == 0){
           body.newTotalVenta = newTotalVenta;
           body.newSubIva = newSubIva;
           body.newComision = newComision;
-          body.id_saldo = crear_saldo[0].id;
+        } else {
+          id_saldo = Consult_saldo[0].id;
+        }
+
+        console.log("saldos...");
+        for (let i = 0; i < body.saldos.length; i++) {
+          valor_iva += parseInt(body.saldos[i].valor_iva);
+          valor_venta += parseInt(body.saldos[i].valor_venta);
+          valor_comision += parseInt(body.saldos[i].valor_comision);
+          body.saldos[i].usuario = body.usuario;
+          body.saldos[i].id_zona = body.id_zona;
+          body.saldos[i].id_encabezado = parseInt(id_saldo);
+
+          if (body.saldos[i].id == undefined || body.saldos[i].id == "") {
+            console.log("crea");
+            const crear_det = await balance.crear_saldos_det(body.saldos[i]);
+          } else {
+            console.log("actualiza");
+            let id = body.saldos[i].id;
+            let data = body.saldos[i];
+            const actualizar = await balance.actualizar_saldos_det(id, data);
+          }
+        }
+        if (Consult_saldo.length == 0) {
+          let valor = [];
+          valor.cod_factura = body.codigo;
+          valor.zona = body.zona;
+          valor.zona_text = body.zona_text;
+          valor.usuario = body.usuario;
+          valor.valor_venta = valor_venta;
+          valor.valor_iva = valor_iva;
+          valor.valor_comision = valor_comision;
+          console.log(valor);
+          // const crear_saldo = await balance.crear(valor);
+          const actualizar = await balance.actualizar(id_saldo, valor);
+          
+          let newTotalVenta =
+            parseInt(body.valor_venta) - parseInt(valor_venta);
+          let newSubIva = parseInt(body.valor_iva) - parseInt(valor_iva);
+          let newComision =
+            parseInt(body.valor_comision) - parseInt(valor_comision);
+          body.newTotalVenta = newTotalVenta;
+          body.newSubIva = newSubIva;
+          body.newComision = newComision;
+          body.id_saldo = id_saldo;
           let act_factura = await balance.apply_saldo_fac(body);
         } else {
           id_saldo = Consult_saldo[0].id;
-          const new_valor_venta =
-            parseInt(body.valor_venta) - parseInt(valor_venta);
-          const new_valor_iva = parseInt(body.valor_iva) - parseInt(valor_iva);
-          const new_valor_comision =
-            parseInt(body.valor_comision) - parseInt(valor_comision);
 
-          const actualizar = await balance.actualizar(id, body);
+          const val_total =
+          parseInt(Consult_saldo[0].valor_venta) - parseInt(valor_venta);
+        const val_iva =
+          parseInt(Consult_saldo[0].valor_iva) - parseInt(valor_iva);
+        const val_comision =
+          parseInt(Consult_saldo[0].valor_comision) -
+          parseInt(valor_comision);
+
+          if (val_total < 0) {
+            body.newTotalVenta =
+              parseInt(body.valor_venta) - parseInt(valor_venta);
+          } else {
+            body.newTotalVenta =
+              parseInt(body.valor_venta) + parseInt(valor_venta);
+          }
+          if (valor_iva < 0) {
+            body.newSubIva = parseInt(body.valor_iva) - parseInt(valor_iva);
+          } else {
+            body.newSubIva = parseInt(body.valor_iva) + parseInt(valor_iva);
+          }
+          if (valor_comision < 0) {
+            body.newComision =
+              parseInt(body.valor_comision) - parseInt(valor_comision);
+          } else {
+            body.newComision =
+              parseInt(body.valor_comision) + parseInt(valor_comision);
+          }
+
           let act_factura = await balance.apply_saldo_fac(body);
-        }
 
+          let valor = [];
+          valor.cod_factura = body.codigo;
+          valor.zona = body.zona;
+          valor.zona_text = body.zona_text;
+          valor.usuario = body.usuario;
+          valor.valor_venta = valor_venta;
+          valor.valor_iva = valor_iva;
+          valor.valor_comision = valor_comision;
+          console.log(valor);
+          // const crear_saldo = await balance.crear(valor);
+          const actualizar = await balance.actualizar(id_saldo, valor);
+          // const new_valor_venta =
+          //   parseInt(body.valor_venta) - parseInt(valor_venta);
+          // const new_valor_iva = parseInt(body.valor_iva) - parseInt(valor_iva);
+          // const new_valor_comision =
+          //   parseInt(body.valor_comision) - parseInt(valor_comision);
+
+          // const actualizar = await balance.actualizar(id_saldo, body);
+          // let act_factura = await balance.apply_saldo_fac(body);
+        }
 
         // console.log(valor_comision);
         // console.log(valor_iva);

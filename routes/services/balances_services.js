@@ -10,6 +10,7 @@ class balances_services {
 
   // CREAR SALDOS DET
   async crear_saldos_det(body) {
+    console.log(body);
     const usuario = body.usuario;
     const producto = body.id_producto;
     const producto_text = body.producto_text;
@@ -226,18 +227,34 @@ class balances_services {
   }
   // CONSULTA SALDOS NUMERO FACTURA
   async validar_factura(data) {
+    console.log(data);
     const rta = await this.pool
-      .query(`select * from saldos a left join saldos_det b on (a.id=id_saldo) where a.numero_factura='${data}'`)
+      .query(`select *,(select sum(valor_iva) from saldos_det b where a.id=b.id_saldo )as sum_valor_iva,
+      (select sum(valor_venta) from saldos_det b where a.id=b.id_saldo )as sum_valor_venta,
+      (select sum(valor_comision) from saldos_det b where a.id=b.id_saldo )as sum_valor_comision from saldos a where a.numero_factura='${data}'`)
       .catch((err) => console.log(err));
     return rta.rows;
   }
+  // async validar_factura(data) {
+  //   const rta = await this.pool
+  //     .query(`select * from saldos a left join saldos_det b on (a.id=b.id_saldo) where a.numero_factura='${data}'`)
+  //     .catch((err) => console.log(err));
+  //   return rta.rows;
+  // }
   // CONSULTA SECUENCIA ID SALDOS
   async secuencia_id_saldos() {
     const rta = await this.pool
-      .query(`select nextval('saldos_id_seq')`)
+      .query(`
+      select id from saldos order by id desc limit 1`)
       .catch((err) => console.log(err));
     return rta.rows;
   }
+  // async secuencia_id_saldos() {
+  //   const rta = await this.pool
+  //     .query(`select nextval('saldos_id_seq')`)
+  //     .catch((err) => console.log(err));
+  //   return rta.rows;
+  // }
   //CONSULTA INVENTARIO POR CODIGO FACTURA
   async consult_invetario_cod(data) {
     const rta = await this.pool
