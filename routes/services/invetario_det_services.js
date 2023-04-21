@@ -240,7 +240,7 @@ class Invetario_detalle {
         )as valor_ingresos,
 		case
 		when ((select sum(valor_venta::double precision)  from inventario_zonas_det where  id_inventario=a.id) -
-                (select sum(valor::double precision)  from pago where       =a.id and concepto <>'FIADO'
+                (select sum(valor::double precision)  from pago where  id_iventario=a.id and concepto <>'FIADO'
         )) is null then
 		(select sum(valor_venta::double precision)  from inventario_zonas_det where  id_inventario=a.id
         )
