@@ -21,6 +21,7 @@ class Invetario_detalle {
     const saldo_base = body.saldo_base;
     const total_comision = body.total_comision;
     const total_iva = body.total_iva;
+    const total_venta = body.total_venta;
     const total_devoluciones = body.total_devoluciones;
     const total_saldos = body.total_saldos;
 
