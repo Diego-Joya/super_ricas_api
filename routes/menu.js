@@ -28,6 +28,8 @@ router.post(
       dta.total_comision = body.valor_comision;
       dta.total_iva = body.valor_iva;
       dta.total_venta = body.valor_venta;
+      dta.total_saldos = body.total_saldos;
+      dta.total_devoluciones = body.total_devoluciones
 
       let id;
 

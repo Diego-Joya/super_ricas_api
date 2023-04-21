@@ -21,7 +21,8 @@ class Invetario_detalle {
     const saldo_base = body.saldo_base;
     const total_comision = body.total_comision;
     const total_iva = body.total_iva;
-    const total_venta = body.total_venta;
+    const total_devoluciones = body.total_devoluciones;
+    const total_saldos = body.total_saldos;
 
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
@@ -29,7 +30,7 @@ class Invetario_detalle {
       .query(
         `UPDATE public.inventario_zonas
         SET id_zona=$1, fecha_modificacion=$2,  fecha_dia=$3, usuario=$4, estado=$5, saldo_base=$6,
-         zona_text=$7, codigo=$8,total_comision=$9, total_iva=$10,total_venta=$11  WHERE id=$12`,
+         zona_text=$7, codigo=$8,total_comision=$9, total_iva=$10,total_venta=$11,total_devoluciones=$12, total_saldos=$13  WHERE id=$14`,
         [
           id_zona,
           fecha_hora,
@@ -42,6 +43,8 @@ class Invetario_detalle {
           total_comision,
           total_iva,
           total_venta,
+          total_devoluciones,
+          total_saldos,
           idact,
         ]
       )
@@ -75,14 +78,16 @@ class Invetario_detalle {
     const total_comision = body.total_comision;
     const total_iva = body.total_iva;
     const total_venta = body.total_venta;
+    const total_devoluciones = body.total_devoluciones;
+    const total_saldos = body.total_saldos;
 
     const estado = "INGRESADA";
 
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
 
     const query = `INSERT INTO public.inventario_zonas(id_zona, fecha_creacion, fecha_dia,
-       usuario, estado, saldo_base, zona_text,codigo,total_comision,total_iva, total_venta)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *, fecha_dia::text as fecha_dia`;
+       usuario, estado, saldo_base, zona_text,codigo,total_comision,total_iva, total_venta,total_devoluciones,total_saldos)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *, fecha_dia::text as fecha_dia`;
 
     const rta = await this.pool
       .query(query, [
@@ -97,6 +102,8 @@ class Invetario_detalle {
         total_comision,
         total_iva,
         total_venta,
+        total_devoluciones,
+        total_saldos
       ])
       .catch((err) => console.log(err));
     return rta.rows;
