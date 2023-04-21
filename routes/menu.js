@@ -193,7 +193,7 @@ router.post(
           body.newSubIva = newSubIva;
           body.newComision = newComision;
           body.id_saldo = id_saldo;
-          let act_factura = await balance.apply_saldo_fac(body);
+          // let act_factura = await balance.apply_saldo_fac(body);
         } else {
           id_saldo = Consult_saldo[0].id;
 
@@ -225,7 +225,7 @@ router.post(
               parseInt(body.valor_comision) + parseInt(valor_comision);
           }
 
-          let act_factura = await balance.apply_saldo_fac(body);
+          // let act_factura = await balance.apply_saldo_fac(body);
 
           let valor = [];
           valor.cod_factura = body.codigo;
