@@ -235,7 +235,7 @@ class Invetario_detalle {
     }
     const query = `select a.*,(a.total_venta + a.saldo_base
       )as valor_venta,((select sum(precio_total::double precision)  from inventario_zonas_det where  id_inventario=a.id
-        )+ a.saldo_base) as precio_total,
+        )+ a.saldo_base) as precio_total_deuda,
       case
       when (select sum(valor::double precision) from pago where id_iventario=a.id and concepto='DESCUENTO') is null then
       (select sum(valor_comision::double precision)  from inventario_zonas_det where  id_inventario=a.id)
