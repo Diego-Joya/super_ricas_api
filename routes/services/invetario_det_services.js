@@ -238,22 +238,17 @@ class Invetario_detalle {
     if (typeof zona !== "undefined") {
       where += ` and b.id ='${zona}'`;
     }
-    const query = `select a.*,(a.total_venta + a.saldo_base
+    const query = `select a.*,a.total_iva as valor_iva,a.total_comision as valor_comision, (a.total_venta + a.saldo_base
       )as valor_venta,((select sum(precio_total::double precision)  from inventario_zonas_det where  id_inventario=a.id
         )+ a.saldo_base) as precio_total_deuda,
-      case
-      when (select sum(valor::double precision) from pago where id_iventario=a.id and concepto='DESCUENTO') is null then
-      (select sum(valor_comision::double precision)  from inventario_zonas_det where  id_inventario=a.id)
-       else
-      (a.total_comision-
-       ((select sum(valor::double precision) from pago where id_iventario=a.id and concepto='DESCUENTO')/2)) end as valor_comision,
+     
        case
       when (select sum(valor::double precision) from pago where id_iventario=a.id and concepto='DESCUENTO') is null then
       0
        else
        ((select sum(valor::double precision) from pago where id_iventario=a.id and concepto='DESCUENTO')) end as valor_descuento,
-       (select sum(valor_iva::double precision)  from inventario_zonas_det where  id_inventario=a.id
-        )as valor_iva,(select sum(valor::double precision)  from pago where  id_iventario=a.id and concepto='INGRESO'
+	   
+		(select sum(valor::double precision)  from pago where  id_iventario=a.id and concepto='INGRESO'
         )as valor_ingresos,
 		case
 		when ((select sum(valor_venta::double precision)  from inventario_zonas_det where  id_inventario=a.id) -
