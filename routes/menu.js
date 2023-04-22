@@ -134,7 +134,7 @@ router.post(
 
           let valor = [];
           valor.cod_factura = body.codigo;
-          valor.zona = body.zona;
+          valor.zona = body.id_zona;
           valor.zona_text = body.zona_text;
           valor.usuario = body.usuario;
           valor.valor_venta = valor_venta;
