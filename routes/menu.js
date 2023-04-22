@@ -13,7 +13,7 @@ const payments = new payments_service();
 const balance = new balances();
 router.post(
   "/",
-  passport.authenticate("jwt", { session: false }),
+  // passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     const body = req.body;
     try {

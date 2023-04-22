@@ -17,11 +17,14 @@ class returns_service {
     const cantidad = body.cantidad;
     const fecha = body.fecha;
     const tipo = body.tipo_devolucion;
+    const valor_unidad = body.valor_unidad;
+    const total = body.total;
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
     const estado = "PENDIENTE";
 
-    const query = `INSERT INTO public.devolucion(usuario, fecha_creacion, id_zona, zona_text, id_producto, producto_text, cantidad, fecha,estado, tipo_devolucion)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`;
+    const query = `INSERT INTO public.devolucion(usuario, fecha_creacion, id_zona, zona_text, id_producto, producto_text,
+       cantidad, fecha,estado, tipo_devolucion, valor_unidad, total)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *`;
     const rta = await this.pool
       .query(query, [
         usuario,
@@ -34,6 +37,8 @@ class returns_service {
         fecha,
         estado,
         tipo,
+        valor_unidad,
+        total
       ])
       .catch((err) => console.log(err));
     return rta.rows;
@@ -100,6 +105,8 @@ class returns_service {
     const producto_text = body.producto_text;
     const cantidad = body.cantidad;
     const tipo = body.tipo_devolucion;
+    const valor_unidad = body.valor_unidad;
+    const total = body.total;
     const fecha = body.fecha;
 
     const fecha_hora = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -111,8 +118,9 @@ class returns_service {
     const rta = await this.pool
       .query(
         `UPDATE public.devolucion
-    SET  usuario=$1, fecha_modificacion=$2, id_zona=$3, zona_text=$4, id_producto=$5, producto_text=$6, cantidad=$7, fecha=$8, tipo_devolucion=$9
-    WHERE id=$10 `,
+    SET  usuario=$1, fecha_modificacion=$2, id_zona=$3, zona_text=$4, id_producto=$5, producto_text=$6, 
+    cantidad=$7, fecha=$8, tipo_devolucion=$9,valor_unidad=$10,total=$11
+    WHERE id=$12 `,
         [
           usuario,
           fecha_hora,
@@ -123,6 +131,8 @@ class returns_service {
           cantidad,
           fecha,
           tipo,
+          valor_unidad,
+          total,
           idact,
         ]
       )
