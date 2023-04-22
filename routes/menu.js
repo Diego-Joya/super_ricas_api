@@ -30,6 +30,7 @@ router.post(
       dta.total_venta = body.valor_venta;
       dta.total_saldos = body.total_saldos;
       dta.total_devoluciones = body.total_devoluciones
+      dta.precio_total = body.precio_total
 
       let id;
 
