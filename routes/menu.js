@@ -31,6 +31,7 @@ router.post(
       dta.total_saldos = body.total_saldos;
       dta.total_devoluciones = body.total_devoluciones
       dta.precio_total = body.precio_total
+      dta.valor_pendiente = body.valor_pendiente
 
       let id;
 
