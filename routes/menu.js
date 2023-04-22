@@ -271,5 +271,23 @@ router.post(
     }
   }
 );
+router.get(
+  "/saldos_det/:id",
+  // passport.authenticate("jwt", { session: false }),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+
+      const Consult_saldo = await balance.validar_factura(id);
+
+      res.json({
+        ok: true,
+        data: Consult_saldo,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 module.exports = router;
