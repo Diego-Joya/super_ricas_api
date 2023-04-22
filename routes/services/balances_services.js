@@ -235,12 +235,12 @@ class balances_services {
       .catch((err) => console.log(err));
     return rta.rows;
   }
-  // async validar_factura(data) {
-  //   const rta = await this.pool
-  //     .query(`select * from saldos a left join saldos_det b on (a.id=b.id_saldo) where a.numero_factura='${data}'`)
-  //     .catch((err) => console.log(err));
-  //   return rta.rows;
-  // }
+  async consultas_saldos_det(data) {
+    const rta = await this.pool
+      .query(`select b.*, b.id as key, a.id as id_saldo from saldos a left join saldos_det b on (a.id=b.id_saldo) where a.numero_factura='${data}'`)
+      .catch((err) => console.log(err));
+    return rta.rows;
+  }
   // CONSULTA SECUENCIA ID SALDOS
   async secuencia_id_saldos() {
     const rta = await this.pool

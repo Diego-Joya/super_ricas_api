@@ -13,7 +13,7 @@ const payments = new payments_service();
 const balance = new balances();
 router.post(
   "/",
-  // passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     const body = req.body;
     try {
@@ -273,12 +273,12 @@ router.post(
 );
 router.get(
   "/saldos_det/:id",
-  // passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
       const { id } = req.params;
 
-      const Consult_saldo = await balance.validar_factura(id);
+      const Consult_saldo = await balance.consultas_saldos_det(id);
 
       res.json({
         ok: true,
