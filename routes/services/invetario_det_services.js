@@ -235,7 +235,7 @@ class Invetario_detalle {
     if (typeof fecha_ini !== "undefined" && fecha_ini != "") {
       where += ` and a.fecha_dia between '${fecha_ini}' and '${fecha_fin}'`;
     }
-    if (typeof zona !== "undefined" || zona !=="" ) {
+    if (typeof zona !== "undefined" && zona !=="" ) {
       where += ` and b.id ='${zona}'`;
     }
     const query = `select a.*,a.total_iva as valor_iva,a.total_comision as valor_comision, (a.total_venta + a.saldo_base
