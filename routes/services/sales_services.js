@@ -11,9 +11,14 @@ class sales_services {
     // const data = body.data;
     const fecha_ini = body.fecha_inicio;
     const fecha_fin = body.fecha_fin;
+    const zona = body.id_zona;
+
     let where = ` where 1=1`;
     if (typeof fecha_ini !== "undefined" && fecha_ini != "") {
       where += ` and a.fecha_dia between '${fecha_ini}' and '${fecha_fin}'`;
+    }
+    if (typeof zona !== "undefined") {
+      where += ` and b.id ='${zona}'`;
     }
     const query = `select a.*,((select sum(valor_venta::double precision)  from inventario_zonas_det where  id_inventario=a.id) + a.saldo_base
     )as valor_venta,((select sum(precio_total::double precision)  from inventario_zonas_det where  id_inventario=a.id
